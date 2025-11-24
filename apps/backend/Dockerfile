@@ -1,33 +1,26 @@
-# Development Dockerfile for Medusa
+# Production Dockerfile for Medusa
 FROM node:20-alpine
 
 # Set working directory
 WORKDIR /server
 
-# Copy package files and npm config
+# Copy only package files first for better caching
 COPY package.json package-lock.json ./
 
-# Install all dependencies using npm
-RUN npm install --legacy-peer-deps
+# Install dependencies (production mode)
+RUN npm install --legacy-peer-deps --production=false
 
-# Development Dockerfile for Medusa
-FROM node:20-alpine
-
-# Set working directory
-WORKDIR /server
-
-# Copy package files and npm config
-COPY package.json package-lock.json ./
-
-# Install all dependencies using npm
-RUN npm install --legacy-peer-deps
-
-# Copy source code
+# Copy all source code
 COPY . .
 
-# Expose the port Medusa runs on
+# Ensure start.sh uses LF and is executable
+RUN chmod +x start.sh
+
+# Build Medusa backend for production
+RUN npm run build
+
+# Expose Medusa port
 EXPOSE 9000
 
-# Start with migrations and then the development server
-RUN chmod +x start.sh
+# Start production server through the start script (runs migrations + start)
 CMD ["sh", "./start.sh"]
