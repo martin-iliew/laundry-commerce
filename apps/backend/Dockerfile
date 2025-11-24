@@ -1,23 +1,23 @@
-# Production Dockerfile for Medusa v2
-FROM node:20-alpine
+FROM node:20-alpine AS builder
 
-# Set working directory
-WORKDIR /server
+WORKDIR /app
 
-# Copy dependency files
 COPY package.json package-lock.json ./
+RUN npm ci
 
-# Install dependencies
-RUN npm install --legacy-peer-deps
-
-# Copy source code
 COPY . .
 
-# Build the project
-RUN npm run build
+RUN npx medusa build
 
-# Expose API port
+FROM node:20-alpine AS runner
+
+WORKDIR /server
+ENV NODE_ENV=production
+
+COPY --from=builder /app/.medusa/server ./
+
+RUN npm ci --omit=dev
+
 EXPOSE 9000
 
-# Start the production server
 CMD ["npm", "run", "start"]
