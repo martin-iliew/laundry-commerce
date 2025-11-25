@@ -1,4 +1,4 @@
-import { Locale, locales, getDefaultLocale } from "@/i18n";
+import { Locale, locales, getDefaultLocale } from "../../i18n";
 
 /**
  * Get the default locale for a given country code
