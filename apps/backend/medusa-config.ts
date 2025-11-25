@@ -16,6 +16,7 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
+    // Added redisUrl
     redisUrl: process.env.REDIS_URL,
   },
   modules: [
