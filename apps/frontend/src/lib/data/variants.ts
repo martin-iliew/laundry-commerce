@@ -4,6 +4,7 @@ import { sdk } from "@lib/config"
 import { HttpTypes } from "@medusajs/types"
 
 import { getAuthHeaders, getCacheOptions } from "./cookies"
+import { TTL_PRODUCTS, getProductsTag } from "./cache-config"
 
 export const retrieveVariant = async (
   variant_id: string
@@ -16,8 +17,12 @@ export const retrieveVariant = async (
     ...authHeaders,
   }
 
+  const cacheOptions = await getCacheOptions("variants")
+  const existingTags = "tags" in cacheOptions ? cacheOptions.tags : []
   const next = {
-    ...(await getCacheOptions("variants")),
+    ...cacheOptions,
+    revalidate: TTL_PRODUCTS,
+    tags: [...existingTags, getProductsTag()],
   }
 
   return await sdk.client
@@ -30,7 +35,6 @@ export const retrieveVariant = async (
         },
         headers,
         next,
-        cache: "force-cache",
       }
     )
     .then(({ variant }) => variant)
