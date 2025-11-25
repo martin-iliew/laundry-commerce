@@ -26,7 +26,7 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   // Load messages for the locale
-  const messages = (await import( `../../../messages/${locale}.json`)).default;
+  const messages = (await import(`../../../../messages/${locale}.json`)).default;
 
   return (
     <html lang={locale} data-mode="light" suppressHydrationWarning>
