@@ -15,5 +15,5 @@ RUN npx medusa build
 # Switch to built output (needed)
 WORKDIR /server/.medusa/server
 
-EXPOSE 8080
+EXPOSE 9000
 CMD ["npm", "run", "start"]
