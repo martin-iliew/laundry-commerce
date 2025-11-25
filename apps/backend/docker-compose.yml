@@ -29,7 +29,9 @@ services:
   # This service runs the Medusa backend application
   # and the admin dashboard.
   medusa:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: medusa_backend
     restart: unless-stopped
     depends_on:
@@ -55,4 +57,3 @@ volumes:
 networks:
   medusa_network:
     driver: bridge
-    

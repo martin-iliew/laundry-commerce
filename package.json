@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "start": "npm run docker:up -w apps/backend & npm run dev -w apps/frontend",
+    "stop": "npm run docker:down -w apps/backend"
+  }
+}
