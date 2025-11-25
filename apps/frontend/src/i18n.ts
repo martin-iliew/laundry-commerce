@@ -11,7 +11,6 @@ export function getDefaultLocale(countryCode: string): Locale {
 }
 
 export default getRequestConfig(async ({ locale }) => {
-  // Validate that the incoming `locale` parameter is valid
   if (!locales.includes(locale as Locale)) {
     notFound();
   }

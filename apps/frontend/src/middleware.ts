@@ -143,8 +143,15 @@ export async function middleware(request: NextRequest) {
       const pathAfterCountry = segments.slice(1).join('/')
       const queryString = request.nextUrl.search || ''
       
-      // Rewrite to include locale segment
-      const rewritePath = `/${countryCode}/${defaultLocale}/${pathAfterCountry}${queryString}`
+      // Build rewrite path - ensure proper formatting
+      let rewritePath
+      if (pathAfterCountry) {
+        rewritePath = `/${countryCode}/${defaultLocale}/${pathAfterCountry}${queryString}`
+      } else {
+        // Root path like /bg -> /bg/bg
+        rewritePath = `/${countryCode}/${defaultLocale}${queryString}`
+      }
+      
       return NextResponse.rewrite(new URL(rewritePath, request.url))
     }
 

@@ -10,13 +10,12 @@ import { SortOptions } from "@modules/store/components/refinement-list/sort-prod
 export const revalidate = 30
 
 type Props = {
-  params: Promise<{ category: string[]; countryCode: string }>
+  params: Promise<{ category: string[]; countryCode: string; locale: string }>
   searchParams: Promise<{
     sortBy?: SortOptions
     page?: string
   }>
 }
-
 export async function generateStaticParams() {
   const product_categories = await listCategories()
 

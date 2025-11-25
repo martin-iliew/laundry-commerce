@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 }
 
 export default async function Addresses(props: {
-  params: Promise<{ countryCode: string }>
+  params: Promise<{ countryCode: string; locale: string }>
 }) {
   const params = await props.params
   const { countryCode } = params

@@ -8,13 +8,12 @@ import CollectionTemplate from "@modules/collections/templates"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 
 type Props = {
-  params: Promise<{ handle: string; countryCode: string }>
+  params: Promise<{ handle: string; countryCode: string; locale: string }>
   searchParams: Promise<{
     page?: string
     sortBy?: SortOptions
   }>
 }
-
 export const revalidate = 30
 
 export const PRODUCT_LIMIT = 12
