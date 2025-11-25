@@ -1,11 +1,10 @@
-"use server"
-
 import { sdk } from "@lib/config"
 import { sortProducts } from "@lib/util/sort-products"
 import { HttpTypes } from "@medusajs/types"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import { getAuthHeaders, getCacheOptions } from "./cookies"
 import { getRegion, retrieveRegion } from "./regions"
+import { TTL_PRODUCTS, getProductsTag } from "./cache-config"
 
 export const listProducts = async ({
   pageParam = 1,
@@ -49,8 +48,12 @@ export const listProducts = async ({
     ...(await getAuthHeaders()),
   }
 
+  const cacheOptions = await getCacheOptions("products")
+  const existingTags = "tags" in cacheOptions ? cacheOptions.tags : []
   const next = {
-    ...(await getCacheOptions("products")),
+    ...cacheOptions,
+    revalidate: TTL_PRODUCTS,
+    tags: [...existingTags, getProductsTag()],
   }
 
   return sdk.client
@@ -69,7 +72,6 @@ export const listProducts = async ({
         },
         headers,
         next,
-        cache: "force-cache",
       }
     )
     .then(({ products, count }) => {

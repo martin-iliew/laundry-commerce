@@ -1,10 +1,19 @@
 import { sdk } from "@lib/config"
 import { HttpTypes } from "@medusajs/types"
 import { getCacheOptions } from "./cookies"
+import {
+  TTL_CATEGORIES,
+  getCategoriesTag,
+  getCategoryTag,
+} from "./cache-config"
 
 export const listCategories = async (query?: Record<string, any>) => {
+  const cacheOptions = await getCacheOptions("categories")
+  const existingTags = "tags" in cacheOptions ? cacheOptions.tags : []
   const next = {
-    ...(await getCacheOptions("categories")),
+    ...cacheOptions,
+    revalidate: TTL_CATEGORIES,
+    tags: [...existingTags, getCategoriesTag()],
   }
 
   const limit = query?.limit || 100
@@ -20,7 +29,6 @@ export const listCategories = async (query?: Record<string, any>) => {
           ...query,
         },
         next,
-        cache: "force-cache",
       }
     )
     .then(({ product_categories }) => product_categories)
@@ -29,8 +37,12 @@ export const listCategories = async (query?: Record<string, any>) => {
 export const getCategoryByHandle = async (categoryHandle: string[]) => {
   const handle = `${categoryHandle.join("/")}`
 
+  const cacheOptions = await getCacheOptions("categories")
+  const existingTags = "tags" in cacheOptions ? cacheOptions.tags : []
   const next = {
-    ...(await getCacheOptions("categories")),
+    ...cacheOptions,
+    revalidate: TTL_CATEGORIES,
+    tags: [...existingTags, getCategoriesTag(), getCategoryTag(handle)],
   }
 
   return sdk.client
@@ -42,7 +54,6 @@ export const getCategoryByHandle = async (categoryHandle: string[]) => {
           handle,
         },
         next,
-        cache: "force-cache",
       }
     )
     .then(({ product_categories }) => product_categories[0])

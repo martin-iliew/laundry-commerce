@@ -32,7 +32,6 @@ async function getRegionMap(cacheId: string) {
         revalidate: 3600,
         tags: [`regions-${cacheId}`],
       },
-      cache: "force-cache",
     }).then(async (response) => {
       const json = await response.json()
 
@@ -101,41 +100,64 @@ async function getCountryCode(
 }
 
 /**
- * Middleware to handle region selection and onboarding status.
+ * Middleware to handle region selection, onboarding status, and i18n locale routing.
  */
 export async function middleware(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams
+  const pathname = request.nextUrl.pathname
+
+  // Handle i18n locale routing first
+  const segments = pathname.split('/').filter(Boolean)
+  
+  // Skip API routes and static assets
+  if (
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/_next') ||
+    pathname.includes('.')
+  ) {
+    return NextResponse.next()
+  }
+
   let redirectUrl = request.nextUrl.href
-
   let response = NextResponse.redirect(redirectUrl, 307)
-
   let cacheIdCookie = request.cookies.get("_medusa_cache_id")
-
   let cacheId = cacheIdCookie?.value || crypto.randomUUID()
 
   const regionMap = await getRegionMap(cacheId)
-
   const countryCode = regionMap && (await getCountryCode(request, regionMap))
 
   const urlHasCountryCode =
     countryCode && request.nextUrl.pathname.split("/")[1].includes(countryCode)
 
-  // if one of the country codes is in the url and the cache id is set, return next
+  // If one of the country codes is in the url and the cache id is set, handle i18n routing
   if (urlHasCountryCode && cacheIdCookie) {
+    // Check if we need to add locale segment
+    // Pattern: /{countryCode}/... → check if second segment is locale
+    const validLocales = ['en', 'bg']
+    const secondSegment = segments[1]
+    const hasLocaleSegment = validLocales.includes(secondSegment)
+
+    if (!hasLocaleSegment && segments.length > 0) {
+      // No locale segment present, add default locale
+      const defaultLocale = countryCode === 'bg' ? 'bg' : 'en'
+      const pathAfterCountry = segments.slice(1).join('/')
+      const queryString = request.nextUrl.search || ''
+      
+      // Rewrite to include locale segment
+      const rewritePath = `/${countryCode}/${defaultLocale}/${pathAfterCountry}${queryString}`
+      return NextResponse.rewrite(new URL(rewritePath, request.url))
+    }
+
     return NextResponse.next()
   }
 
-  // if one of the country codes is in the url and the cache id is not set, set the cache id and redirect
+  // If one of the country codes is in the url and the cache id is not set, set the cache id and redirect
   if (urlHasCountryCode && !cacheIdCookie) {
     response.cookies.set("_medusa_cache_id", cacheId, {
       maxAge: 60 * 60 * 24,
     })
 
     return response
-  }
-
-  // check if the url is a static asset
-  if (request.nextUrl.pathname.includes(".")) {
-    return NextResponse.next()
   }
 
   const redirectPath =

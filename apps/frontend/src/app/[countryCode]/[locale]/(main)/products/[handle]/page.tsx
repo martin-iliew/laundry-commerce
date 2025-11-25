@@ -5,10 +5,10 @@ import { getRegion, listRegions } from "@lib/data/regions"
 import ProductTemplate from "@modules/products/templates"
 import { HttpTypes } from "@medusajs/types"
 
-export const revalidate = 10 
+export const revalidate = 30
 
 type Props = {
-  params: Promise<{ countryCode: string; handle: string }>
+  params: Promise<{ countryCode: string; locale: string; handle: string }>
   searchParams: Promise<{ v_id?: string }>
 }
 
@@ -21,6 +21,8 @@ export async function generateStaticParams() {
     if (!countryCodes) {
       return []
     }
+
+    const locales = ["en", "bg"]
 
     const promises = countryCodes.map(async (country) => {
       const { response } = await listProducts({
@@ -38,10 +40,13 @@ export async function generateStaticParams() {
 
     return countryProducts
       .flatMap((countryData) =>
-        countryData.products.map((product) => ({
-          countryCode: countryData.country,
-          handle: product.handle,
-        }))
+        countryData.products.flatMap((product) =>
+          locales.map((locale) => ({
+            countryCode: countryData.country,
+            locale,
+            handle: product.handle,
+          }))
+        )
       )
       .filter((param) => param.handle)
   } catch (error) {
@@ -73,7 +78,7 @@ function getImagesForVariant(
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params
-  const { handle } = params
+  const { handle, locale } = params
   const region = await getRegion(params.countryCode)
 
   if (!region) {
@@ -89,12 +94,16 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     notFound()
   }
 
+  // Use getTranslations for metadata
+  const { getTranslations } = await import("next-intl/server")
+  const t = await getTranslations({ locale, namespace: "product" })
+
   return {
-    title: `${product.title} | Medusa Store`,
-    description: `${product.title}`,
+    title: t("metaTitle", { title: product.title }),
+    description: product.description || t("metaDescription", { title: product.title }),
     openGraph: {
-      title: `${product.title} | Medusa Store`,
-      description: `${product.title}`,
+      title: t("metaTitle", { title: product.title }),
+      description: product.description || t("metaDescription", { title: product.title }),
       images: product.thumbnail ? [product.thumbnail] : [],
     },
   }

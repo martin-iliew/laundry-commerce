@@ -5,9 +5,13 @@ import { StoreRegion } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
 import SideMenu from "@modules/layout/components/side-menu"
+import LanguageSwitcher from "@modules/layout/components/language-switcher"
+import { useTranslations } from "next-intl"
+import { getTranslations } from "next-intl/server"
 
 export default async function Nav() {
   const regions = await listRegions().then((regions: StoreRegion[]) => regions)
+  const t = await getTranslations("nav")
 
   return (
     <div className="sticky top-0 inset-x-0 z-50 group">
@@ -25,18 +29,19 @@ export default async function Nav() {
               className="txt-compact-xlarge-plus hover:text-ui-fg-base uppercase"
               data-testid="nav-store-link"
             >
-              Medusa Store
+              {t("storeName")}
             </LocalizedClientLink>
           </div>
 
           <div className="flex items-center gap-x-6 h-full flex-1 basis-0 justify-end">
             <div className="hidden small:flex items-center gap-x-6 h-full">
+              <LanguageSwitcher />
               <LocalizedClientLink
                 className="hover:text-ui-fg-base"
                 href="/account"
                 data-testid="nav-account-link"
               >
-                Account
+                {t("account")}
               </LocalizedClientLink>
             </div>
             <Suspense
@@ -46,7 +51,7 @@ export default async function Nav() {
                   href="/cart"
                   data-testid="nav-cart-link"
                 >
-                  Cart (0)
+                  {t("cartWithCount", { count: 0 })}
                 </LocalizedClientLink>
               }
             >
