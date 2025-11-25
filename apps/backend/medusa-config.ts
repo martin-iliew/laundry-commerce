@@ -16,6 +16,7 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
+    redisUrl: process.env.REDIS_URL,
   },
   modules: [
     {
@@ -57,7 +58,7 @@ module.exports = defineConfig({
             id: "caching-redis",
             is_default: true,
             options: {
-              redisUrl: process.env.CACHE_REDIS_URL,
+              redisUrl: process.env.REDIS_URL,
             },
           },
         ],
@@ -66,7 +67,7 @@ module.exports = defineConfig({
     {
       resolve: "@medusajs/medusa/event-bus-redis",
       options: {
-        redisUrl: process.env.EVENTS_REDIS_URL,
+        redisUrl: process.env.REDIS_URL,
       },
     },
   ],
