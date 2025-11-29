@@ -1,117 +1,109 @@
-# Custom Module
+# Custom Modules
 
-A module is a package of reusable functionalities. It can be integrated into your Medusa application without affecting the overall system. You can create a module as part of a plugin.
+Extend Medusa with domain-specific modules containing data models and business logic.
 
-> Learn more about modules in [this documentation](https://docs.medusajs.com/learn/fundamentals/modules).
+## Creating a Module
 
-To create a module:
-
-## 1. Create a Data Model
-
-A data model represents a table in the database. You create a data model in a TypeScript or JavaScript file under the `models` directory of a module.
-
-For example, create the file `src/modules/blog/models/post.ts` with the following content:
+### 1. Define Data Model
 
 ```ts
-import { model } from "@medusajs/framework/utils"
+// src/modules/laundry/models/service.ts
+import { model } from "@medusajs/framework/utils";
 
-const Post = model.define("post", {
+const LaundryService = model.define("laundry_service", {
   id: model.id().primaryKey(),
-  title: model.text(),
-})
+  name: model.text(),
+  pricePerKg: model.number(),
+  turnaroundDays: model.number(),
+});
 
-export default Post
+export default LaundryService;
 ```
 
-## 2. Create a Service
-
-A module must define a service. A service is a TypeScript or JavaScript class holding methods related to a business logic or commerce functionality.
-
-For example, create the file `src/modules/blog/service.ts` with the following content:
+### 2. Create Service
 
 ```ts
-import { MedusaService } from "@medusajs/framework/utils"
-import Post from "./models/post"
+// src/modules/laundry/service.ts
+import { MedusaService } from "@medusajs/framework/utils";
+import LaundryService from "./models/service";
 
-class BlogModuleService extends MedusaService({
-  Post,
-}){
+class LaundryModuleService extends MedusaService({ LaundryService }) {
+  async getActiveServices() {
+    return await this.listLaundryServices({ active: true });
+  }
 }
 
-export default BlogModuleService
+export default LaundryModuleService;
 ```
 
-## 3. Export Module Definition
-
-A module must have an `index.ts` file in its root directory that exports its definition. The definition specifies the main service of the module.
-
-For example, create the file `src/modules/blog/index.ts` with the following content:
+### 3. Export Module
 
 ```ts
-import BlogModuleService from "./service"
-import { Module } from "@medusajs/framework/utils"
+// src/modules/laundry/index.ts
+import LaundryModuleService from "./service";
+import { Module } from "@medusajs/framework/utils";
 
-export const BLOG_MODULE = "blog"
+export const LAUNDRY_MODULE = "laundry";
 
-export default Module(BLOG_MODULE, {
-  service: BlogModuleService,
-})
+export default Module(LAUNDRY_MODULE, {
+  service: LaundryModuleService,
+});
 ```
 
-## 4. Add Module to Medusa's Configurations
-
-To start using the module, add it to `medusa-config.ts`:
+### 4. Register in Config
 
 ```ts
-module.exports = defineConfig({
-  projectConfig: {
-    // ...
+// medusa-config.ts
+modules: [
+  {
+    resolve: "./src/modules/laundry",
   },
-  modules: [
-    {
-      resolve: "./src/modules/blog",
-    },
-  ],
-})
+]
 ```
 
-## 5. Generate and Run Migrations
-
-To generate migrations for your module, run the following command:
+### 5. Generate & Run Migrations
 
 ```bash
-npx medusa db:generate blog
-```
-
-Then, to run migrations, run the following command:
-
-```bash
+npx medusa db:generate laundry
 npx medusa db:migrate
 ```
 
-## Use Module
+## Using Your Module
 
-You can use the module in customizations within the Medusa application, such as workflows and API routes.
-
-For example, to use the module in an API route:
+### In API Routes
 
 ```ts
-import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
-import BlogModuleService from "../../../modules/blog/service"
-import { BLOG_MODULE } from "../../../modules/blog"
+import { LAUNDRY_MODULE } from "../../../modules/laundry";
 
-export async function GET(
-  req: MedusaRequest,
-  res: MedusaResponse
-): Promise<void> {
-  const blogModuleService: BlogModuleService = req.scope.resolve(
-    BLOG_MODULE
-  )
-
-  const posts = await blogModuleService.listPosts()
-
-  res.json({
-    posts
-  })
+export async function GET(req: MedusaRequest, res: MedusaResponse) {
+  const laundryService = req.scope.resolve(LAUNDRY_MODULE);
+  const services = await laundryService.getActiveServices();
+  
+  res.json({ services });
 }
 ```
+
+### In Workflows
+
+```ts
+const step = createStep("my-step", async (input, { container }) => {
+  const laundryService = container.resolve(LAUNDRY_MODULE);
+  // Use service
+});
+```
+
+## Data Model Field Types
+
+```ts
+model.id()           // Primary key
+model.text()         // String
+model.number()       // Number
+model.boolean()      // Boolean
+model.dateTime()     // Timestamp
+model.json()         // JSON data
+model.enum([...])    // Enum values
+```
+
+---
+
+[Medusa Modules Docs](https://docs.medusajs.com/learn/fundamentals/modules) • [Backend README](../README.md)

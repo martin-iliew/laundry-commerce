@@ -1,38 +1,97 @@
-# Custom scheduled jobs
+# Scheduled Jobs
 
-A scheduled job is a function executed at a specified interval of time in the background of your Medusa application.
+Automate recurring tasks with cron-based scheduled jobs.
 
-> Learn more about scheduled jobs in [this documentation](https://docs.medusajs.com/learn/fundamentals/scheduled-jobs).
+## Overview
 
-A scheduled job is created in a TypeScript or JavaScript file under the `src/jobs` directory.
+Scheduled jobs are functions that run automatically at specified intervals.
 
-For example, create the file `src/jobs/hello-world.ts` with the following content:
+## Basic Example
 
 ```ts
-import {
-  MedusaContainer
-} from "@medusajs/framework/types";
+import { MedusaContainer } from "@medusajs/framework/types";
 
-export default async function myCustomJob(container: MedusaContainer) {
-  const productService = container.resolve("product")
+export default async function dailyReport(container: MedusaContainer) {
+  const orderService = container.resolve("order");
+  
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  const [orders, count] = await orderService.listAndCount({
+    created_at: { gte: yesterday },
+  });
 
-  const products = await productService.listAndCountProducts();
-
-  // Do something with the products
+  console.log(`Orders yesterday: ${count}`);
+  
+  // Send report email
+  const notificationService = container.resolve("notification");
+  await notificationService.send({
+    to: process.env.ADMIN_EMAIL,
+    template: "daily-report",
+    data: { count, orders },
+  });
 }
 
 export const config = {
-  name: "daily-product-report",
-  schedule: "0 0 * * *", // Every day at midnight
+  name: "daily-order-report",
+  schedule: "0 8 * * *", // Every day at 8 AM
 };
 ```
 
-A scheduled job file must export:
+## Cron Schedule Reference
 
-- The function to be executed whenever it’s time to run the scheduled job.
-- A configuration object defining the job. It has three properties:
-  - `name`: a unique name for the job.
-  - `schedule`: a [cron expression](https://crontab.guru/).
-  - `numberOfExecutions`: an optional integer, specifying how many times the job will execute before being removed
+| Schedule | Expression | Description |
+|----------|------------|-------------|
+| Every hour | `0 * * * *` | Hourly |
+| Every 6 hours | `0 */6 * * *` | 4 times daily |
+| Daily at midnight | `0 0 * * *` | End of day |
+| Daily at 9 AM | `0 9 * * *` | Morning |
+| Weekly (Monday) | `0 9 * * 1` | Monday at 9 AM |
 
-The `handler` is a function that accepts one parameter, `container`, which is a `MedusaContainer` instance used to resolve services.
+**Format**: `minute hour day month weekday`
+
+Use [crontab.guru](https://crontab.guru/) for help.
+
+## Limited Executions
+
+Run a job a specific number of times:
+
+```ts
+export const config = {
+  name: "limited-job",
+  schedule: "0 0 * * *",
+  numberOfExecutions: 7,  // Run for 7 days, then stop
+};
+```
+
+## Example: Inventory Check
+
+```ts
+export default async function inventoryCheck(container: MedusaContainer) {
+  const inventoryService = container.resolve("inventory");
+  const [items] = await inventoryService.listInventoryItems();
+
+  const lowStock = items.filter(item => item.quantity < 10);
+
+  if (lowStock.length > 0) {
+    // Send alert
+  }
+}
+
+export const config = {
+  name: "inventory-check",
+  schedule: "0 */6 * * *", // Every 6 hours
+};
+```
+
+## Testing
+
+Run manually:
+
+```bash
+npx medusa exec ./src/jobs/daily-report.ts
+```
+
+---
+
+[Medusa Scheduled Jobs Docs](https://docs.medusajs.com/learn/fundamentals/scheduled-jobs) • [Backend README](../README.md)

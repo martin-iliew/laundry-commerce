@@ -1,63 +1,106 @@
-# Custom CLI Script
+# CLI Scripts
 
-A custom CLI script is a function to execute through Medusa's CLI tool. This is useful when creating custom Medusa tooling to run as a CLI tool.
+Execute custom tooling and utilities via Medusa's CLI.
 
-> Learn more about custom CLI scripts in [this documentation](https://docs.medusajs.com/learn/fundamentals/custom-cli-scripts).
+## Overview
 
-## How to Create a Custom CLI Script?
+Custom CLI scripts run administrative tasks, data migrations, seeding, and custom utilities.
 
-To create a custom CLI script, create a TypeScript or JavaScript file under the `src/scripts` directory. The file must default export a function.
+## Basic Example
 
-For example, create the file `src/scripts/my-script.ts` with the following content:
+```ts
+import { ExecArgs } from "@medusajs/framework/types";
 
-```ts title="src/scripts/my-script.ts"
-import { 
-  ExecArgs,
-} from "@medusajs/framework/types"
+export default async function myScript({ container }: ExecArgs) {
+  const productService = container.resolve("product");
+  const [, count] = await productService.listAndCountProducts();
 
-export default async function myScript ({
-  container
-}: ExecArgs) {
-  const productModuleService = container.resolve("product")
-
-  const [, count] = await productModuleService.listAndCountProducts()
-
-  console.log(`You have ${count} product(s)`)
+  console.log(`Total products: ${count}`);
 }
 ```
 
-The function receives as a parameter an object having a `container` property, which is an instance of the Medusa Container. Use it to resolve resources in your Medusa application.
-
----
-
-## How to Run Custom CLI Script?
-
-To run the custom CLI script, run the `exec` command:
+**Run it:**
 
 ```bash
 npx medusa exec ./src/scripts/my-script.ts
 ```
 
----
-
-## Custom CLI Script Arguments
-
-Your script can accept arguments from the command line. Arguments are passed to the function's object parameter in the `args` property.
-
-For example:
+## Example: Seed Data
 
 ```ts
-import { ExecArgs } from "@medusajs/framework/types"
+import { ExecArgs } from "@medusajs/framework/types";
 
-export default async function myScript ({
-  args
-}: ExecArgs) {
-  console.log(`The arguments you passed: ${args}`)
+export default async function seedServices({ container }: ExecArgs) {
+  const laundryService = container.resolve("laundry");
+
+  const services = [
+    { name: "Wash & Fold", pricePerKg: 5.99, turnaroundDays: 2 },
+    { name: "Dry Cleaning", pricePerKg: 12.99, turnaroundDays: 3 },
+    { name: "Ironing", pricePerKg: 3.99, turnaroundDays: 1 },
+  ];
+
+  for (const service of services) {
+    await laundryService.createLaundryService(service);
+    console.log(`✓ Created: ${service.name}`);
+  }
 }
 ```
 
-Then, pass the arguments in the `exec` command after the file path:
+## Using Arguments
+
+```ts
+export default async function myScript({ container, args }: ExecArgs) {
+  const [startDate, endDate] = args;
+  console.log(`Processing from ${startDate} to ${endDate}`);
+}
+```
+
+**Run with args:**
 
 ```bash
-npx medusa exec ./src/scripts/my-script.ts arg1 arg2
+npx medusa exec ./src/scripts/my-script.ts 2024-01-01 2024-12-31
 ```
+
+## Example: Export Data
+
+```ts
+import { writeFileSync } from "fs";
+
+export default async function exportOrders({ container }: ExecArgs) {
+  const orderService = container.resolve("order");
+  const [orders] = await orderService.list();
+
+  const csv = orders.map(o => 
+    `${o.id},${o.email},${o.total}`
+  ).join("\n");
+
+  writeFileSync("orders.csv", csv);
+  console.log("✓ Exported to orders.csv");
+}
+```
+
+## Dry Run Pattern
+
+```ts
+export default async function cleanupData({ container, args }: ExecArgs) {
+  const isDryRun = args.includes("--dry-run");
+
+  if (isDryRun) console.log("DRY RUN - No changes will be made\n");
+
+  const service = container.resolve("customer");
+  const [testCustomers] = await service.list({ email: { $ilike: "%@test.com" } });
+
+  for (const customer of testCustomers) {
+    if (isDryRun) {
+      console.log(`Would delete: ${customer.email}`);
+    } else {
+      await service.delete(customer.id);
+      console.log(`✓ Deleted: ${customer.email}`);
+    }
+  }
+}
+```
+
+---
+
+[Medusa CLI Scripts Docs](https://docs.medusajs.com/learn/fundamentals/custom-cli-scripts) • [Backend README](../README.md)

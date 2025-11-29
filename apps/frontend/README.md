@@ -1,125 +1,92 @@
-<p align="center">
-  <a href="https://www.medusajs.com">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/59018053/229103275-b5e482bb-4601-46e6-8142-244f531cebdb.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/59018053/229103726-e5b529a3-9b3f-4970-8a1f-c6af37f087bf.svg">
-    <img alt="Medusa logo" src="https://user-images.githubusercontent.com/59018053/229103726-e5b529a3-9b3f-4970-8a1f-c6af37f087bf.svg">
-    </picture>
-  </a>
-</p>
+# Frontend - Next.js Storefront
 
-<h1 align="center">
-  Medusa Next.js Starter Template
-</h1>
+Customer-facing storefront for the Laundry Commerce platform built with Next.js 15.
 
-<p align="center">
-Combine Medusa's modules for your commerce backend with the newest Next.js 15 features for a performant storefront.</p>
+## Tech Stack
 
-<p align="center">
-  <a href="https://github.com/medusajs/medusa/blob/master/CONTRIBUTING.md">
-    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" alt="PRs welcome!" />
-  </a>
-  <a href="https://discord.gg/xpCwq3Kfn8">
-    <img src="https://img.shields.io/badge/chat-on%20discord-7289DA.svg" alt="Discord Chat" />
-  </a>
-  <a href="https://twitter.com/intent/follow?screen_name=medusajs">
-    <img src="https://img.shields.io/twitter/follow/medusajs.svg?label=Follow%20@medusajs" alt="Follow @medusajs" />
-  </a>
-</p>
+- **Framework**: Next.js 15.3.1 with App Router
+- **Styling**: Tailwind CSS + @medusajs/ui
+- **Internationalization**: next-intl (English, Bulgarian)
+- **Payments**: Stripe integration
+- **Language**: TypeScript + React 19 RC
 
-### Prerequisites
+## Features
 
-To use the [Next.js Starter Template](https://medusajs.com/nextjs-commerce/), you should have a Medusa server running locally on port 9000.
-For a quick setup, run:
+- Server Components & Server Actions
+- Dynamic routing: `/[countryCode]/[locale]/...`
+- Country-based locale detection
+- Product catalog, cart, checkout
+- Customer accounts
+- Responsive design
 
-```shell
-npx create-medusa-app@latest
-```
+## Getting Started
 
-Check out [create-medusa-app docs](https://docs.medusajs.com/learn/installation) for more details and troubleshooting.
-
-# Overview
-
-The Medusa Next.js Starter is built with:
-
-- [Next.js](https://nextjs.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Typescript](https://www.typescriptlang.org/)
-- [Medusa](https://medusajs.com/)
-
-Features include:
-
-- Full ecommerce support:
-  - Product Detail Page
-  - Product Overview Page
-  - Product Collections
-  - Cart
-  - Checkout with Stripe
-  - User Accounts
-  - Order Details
-- Full Next.js 15 support:
-  - App Router
-  - Next fetching/caching
-  - Server Components
-  - Server Actions
-  - Streaming
-  - Static Pre-Rendering
-
-# Quickstart
-
-### Setting up the environment variables
-
-Navigate into your projects directory and get your environment variables ready:
-
-```shell
-cd nextjs-starter-medusa/
-mv .env.template .env.local
-```
-
-### Install dependencies
-
-Use Yarn to install all dependencies.
-
-```shell
-yarn
-```
-
-### Start developing
-
-You are now ready to start up your project.
-
-```shell
+```bash
+cd apps/frontend
+yarn install
+cp .env.template .env.local
+# Configure .env.local with backend URL and Stripe key
 yarn dev
 ```
 
-### Open the code and start customizing
+Visit http://localhost:8000
 
-Your site is now running at http://localhost:8000!
+## Environment Variables
 
-# Payment integrations
-
-By default this starter supports the following payment integrations
-
-- [Stripe](https://stripe.com/)
-
-To enable the integrations you need to add the following to your `.env.local` file:
-
-```shell
-NEXT_PUBLIC_STRIPE_KEY=<your-stripe-public-key>
+```env
+NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://localhost:9000
+NEXT_PUBLIC_BASE_URL=http://localhost:8000
+NEXT_PUBLIC_STRIPE_KEY=pk_test_your_key
 ```
 
-You'll also need to setup the integrations in your Medusa server. See the [Medusa documentation](https://docs.medusajs.com) for more information on how to configure [Stripe](https://docs.medusajs.com/resources/commerce-modules/payment/payment-provider/stripe#main).
+## Project Structure
 
-# Resources
+```
+src/
+├── app/[countryCode]/[locale]/(main)/  # Main storefront routes
+├── lib/                                # Utilities
+├── modules/                            # Feature modules
+├── i18n.ts                            # i18n config
+└── middleware.ts                      # Locale routing
+messages/
+├── en.json                            # English translations
+└── bg.json                            # Bulgarian translations
+```
 
-## Learn more about Medusa
+## Internationalization
 
-- [Website](https://www.medusajs.com/)
-- [GitHub](https://github.com/medusajs)
-- [Documentation](https://docs.medusajs.com/)
+Supported locales: `['en', 'bg']`
 
-## Learn more about Next.js
+Routes: `/us/en`, `/bg/bg`, etc.
 
-- [Website](https://nextjs.org/)
-- [GitHub](https://github.com/vercel/next.js)
-- [Documentation](https://nextjs.org/docs)
+**Add a translation:**
+
+Edit `messages/en.json` or `messages/bg.json`
+
+**Use in components:**
+
+```tsx
+import { useTranslations } from 'next-intl';
+
+const t = useTranslations('common');
+return <h1>{t('welcome')}</h1>;
+```
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `yarn dev` | Start dev server (port 8000) |
+| `yarn build` | Build for production |
+| `yarn start` | Start production server |
+| `yarn lint` | Run ESLint |
+
+## Documentation
+
+- [Main README](../../README.md)
+- [Backend README](../backend/README.md)
+- [Next.js Docs](https://nextjs.org/docs)
+
+---
+
+Built by Martin Iliew with Next.js 15 and Medusa v2
