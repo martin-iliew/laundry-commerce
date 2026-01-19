@@ -1,62 +1,109 @@
-<p align="center">
-  <a href="https://www.medusajs.com">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/59018053/229103275-b5e482bb-4601-46e6-8142-244f531cebdb.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/59018053/229103726-e5b529a3-9b3f-4970-8a1f-c6af37f087bf.svg">
-    <img alt="Medusa logo" src="https://user-images.githubusercontent.com/59018053/229103726-e5b529a3-9b3f-4970-8a1f-c6af37f087bf.svg">
-    </picture>
-  </a>
-</p>
-<h1 align="center">
-  Medusa
-</h1>
+# Backend - Medusa Commerce Engine
 
-<h4 align="center">
-  <a href="https://docs.medusajs.com">Documentation</a> |
-  <a href="https://www.medusajs.com">Website</a>
-</h4>
+Headless commerce backend powering the Laundry Commerce platform.
 
-<p align="center">
-  Building blocks for digital commerce
-</p>
-<p align="center">
-  <a href="https://github.com/medusajs/medusa/blob/master/CONTRIBUTING.md">
-    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" alt="PRs welcome!" />
-  </a>
-    <a href="https://www.producthunt.com/posts/medusa"><img src="https://img.shields.io/badge/Product%20Hunt-%231%20Product%20of%20the%20Day-%23DA552E" alt="Product Hunt"></a>
-  <a href="https://discord.gg/xpCwq3Kfn8">
-    <img src="https://img.shields.io/badge/chat-on%20discord-7289DA.svg" alt="Discord Chat" />
-  </a>
-  <a href="https://twitter.com/intent/follow?screen_name=medusajs">
-    <img src="https://img.shields.io/twitter/follow/medusajs.svg?label=Follow%20@medusajs" alt="Follow @medusajs" />
-  </a>
-</p>
+## Overview
 
-## Compatibility
+Medusa v2 backend with custom modules, workflows, and API routes for laundry service operations.
 
-This starter is compatible with versions >= 2 of `@medusajs/medusa`. 
+## Tech Stack
 
-## Getting Started
+- **Framework**: Medusa v2.11.3
+- **Database**: PostgreSQL 14+
+- **Language**: TypeScript
+- **Admin**: Built-in admin dashboard
 
-Visit the [Quickstart Guide](https://docs.medusajs.com/learn/installation) to set up a server.
+## Quick Start
 
-Visit the [Docs](https://docs.medusajs.com/learn/installation#get-started) to learn more about our system requirements.
+```bash
+cd apps/backend
+npm install
+npm run docker:up        # Start PostgreSQL
+npx medusa db:migrate    # Run migrations
+npm run seed             # Optional: seed data
+npm run dev              # Start server
+```
 
-## What is Medusa
+Access:
+- API: http://localhost:9000
+- Admin: http://localhost:9000/app
 
-Medusa is a set of commerce modules and tools that allow you to build rich, reliable, and performant commerce applications without reinventing core commerce logic. The modules can be customized and used to build advanced ecommerce stores, marketplaces, or any product that needs foundational commerce primitives. All modules are open-source and freely available on npm.
+## Project Structure
 
-Learn more about [Medusa’s architecture](https://docs.medusajs.com/learn/introduction/architecture) and [commerce modules](https://docs.medusajs.com/learn/fundamentals/modules/commerce-modules) in the Docs.
+```
+src/
+├── admin/         # Admin panel customizations
+├── api/           # Custom API routes
+├── jobs/          # Scheduled jobs
+├── links/         # Module relationships
+├── modules/       # Custom modules
+├── scripts/       # CLI utilities
+├── subscribers/   # Event handlers
+└── workflows/     # Business logic
+```
 
-## Community & Contributions
+## Customization
 
-The community and core team are available in [GitHub Discussions](https://github.com/medusajs/medusa/discussions), where you can ask for support, discuss roadmap, and share ideas.
+### API Routes
 
-Join our [Discord server](https://discord.com/invite/medusajs) to meet other community members.
+Create file-based routes in `src/api/`:
 
-## Other channels
+```ts
+// src/api/store/services/route.ts
+import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 
-- [GitHub Issues](https://github.com/medusajs/medusa/issues)
-- [Twitter](https://twitter.com/medusajs)
-- [LinkedIn](https://www.linkedin.com/company/medusajs)
-- [Medusa Blog](https://medusajs.com/blog/)
+export async function GET(req: MedusaRequest, res: MedusaResponse) {
+  res.json({ services: [...] });
+}
+```
+
+### Workflows
+
+Orchestrate business logic:
+
+```ts
+import { createWorkflow, createStep } from "@medusajs/framework/workflows-sdk";
+
+const myWorkflow = createWorkflow("my-workflow", (input) => {
+  // Define steps
+});
+```
+
+### Custom Modules
+
+Add domain-specific functionality in `src/modules/`.
+
+See README files in each subdirectory for detailed guides.
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server |
+| `npm run build` | Build for production |
+| `npm run docker:up` | Start PostgreSQL |
+| `npm run docker:down` | Stop PostgreSQL |
+| `npm run seed` | Seed database |
+
+## Environment Variables
+
+```env
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/medusa
+JWT_SECRET=your-secret
+COOKIE_SECRET=your-cookie-secret
+ADMIN_CORS=http://localhost:9000
+STORE_CORS=http://localhost:8000
+```
+
+## Documentation
+
+- [Main README](../../README.md)
+- [Frontend README](../frontend/README.md)
+- [API Routes](./src/api/README.md)
+- [Workflows](./src/workflows/README.md)
+- [Modules](./src/modules/README.md)
+- [Medusa Docs](https://docs.medusajs.com)
+
+---
+
+Powered by Medusa v2 • Built by Martin Iliew

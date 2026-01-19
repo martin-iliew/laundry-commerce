@@ -1,135 +1,105 @@
 # Custom API Routes
 
-An API Route is a REST API endpoint.
+REST API endpoints for the Laundry Commerce platform.
 
-An API Route is created in a TypeScript or JavaScript file under the `/src/api` directory of your Medusa application. The file’s name must be `route.ts` or `route.js`.
+## Overview
 
-> Learn more about API Routes in [this documentation](https://docs.medusajs.com/learn/fundamentals/api-routes)
+API routes use file-based routing. Create a `route.ts` file to define endpoints.
 
-For example, to create a `GET` API Route at `/store/hello-world`, create the file `src/api/store/hello-world/route.ts` with the following content:
+**Route Path → File Location**
+- `/store/services` → `src/api/store/services/route.ts`
+- `/admin/custom` → `src/api/admin/custom/route.ts`
+
+## Supported HTTP Methods
+
+Export functions: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `OPTIONS`, `HEAD`
+
+## Basic Example
 
 ```ts
+// src/api/store/services/route.ts
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   res.json({
-    message: "Hello world!",
+    services: [
+      { id: "wash-fold", name: "Wash & Fold", pricePerKg: 5.99 },
+      { id: "dry-clean", name: "Dry Cleaning", pricePerKg: 12.99 },
+    ]
   });
 }
 ```
 
-## Supported HTTP methods
+## Route Parameters
 
-The file based routing supports the following HTTP methods:
-
-- GET
-- POST
-- PUT
-- PATCH
-- DELETE
-- OPTIONS
-- HEAD
-
-You can define a handler for each of these methods by exporting a function with the name of the method in the paths `route.ts` file.
-
-For example:
+Use `[param]` directories:
 
 ```ts
-import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
-
-export async function GET(req: MedusaRequest, res: MedusaResponse) {
-  // Handle GET requests
-}
-
+// src/api/store/estimate/[serviceId]/route.ts
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
-  // Handle POST requests
-}
-
-export async function PUT(req: MedusaRequest, res: MedusaResponse) {
-  // Handle PUT requests
+  const { serviceId } = req.params;
+  const { weight } = req.body;
+  
+  const total = calculatePrice(serviceId, weight);
+  res.json({ total });
 }
 ```
 
-## Parameters
+## Using Services
 
-To create an API route that accepts a path parameter, create a directory within the route's path whose name is of the format `[param]`.
-
-For example, if you want to define a route that takes a `productId` parameter, you can do so by creating a file called `/api/products/[productId]/route.ts`:
+Access Medusa modules via `req.scope`:
 
 ```ts
-import type {
-  MedusaRequest,
-  MedusaResponse,
-} from "@medusajs/framework/http"
-
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
-  const { productId } = req.params;
-
-  res.json({
-    message: `You're looking for product ${productId}`
-  })
+  const productService = req.scope.resolve("product");
+  const [, count] = await productService.listAndCount();
+  
+  res.json({ count });
 }
 ```
 
-To create an API route that accepts multiple path parameters, create within the file's path multiple directories whose names are of the format `[param]`.
+## Authentication
 
-For example, if you want to define a route that takes both a `productId` and a `variantId` parameter, you can do so by creating a file called `/api/products/[productId]/variants/[variantId]/route.ts`.
-
-## Using the container
-
-The Medusa container is available on `req.scope`. Use it to access modules' main services and other registered resources:
+Protected routes receive authenticated user info:
 
 ```ts
-import type {
-  MedusaRequest,
-  MedusaResponse,
-} from "@medusajs/framework/http"
-
-export const GET = async (
-  req: MedusaRequest,
-  res: MedusaResponse
-) => {
-  const productModuleService = req.scope.resolve("product")
-
-  const [, count] = await productModuleService.listAndCount()
-
-  res.json({
-    count,
-  })
+export async function GET(req: MedusaRequest, res: MedusaResponse) {
+  const customerId = req.user?.customer_id;
+  
+  if (!customerId) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  
+  // Fetch customer data
 }
 ```
 
 ## Middleware
 
-You can apply middleware to your routes by creating a file called `/api/middlewares.ts`. This file must export a configuration object with what middleware you want to apply to which routes.
-
-For example, if you want to apply a custom middleware function to the `/store/custom` route, you can do so by adding the following to your `/api/middlewares.ts` file:
+Define custom middleware in `src/api/middlewares.ts`:
 
 ```ts
-import { defineMiddlewares } from "@medusajs/framework/http"
-import type {
-  MedusaRequest,
-  MedusaResponse,
-  MedusaNextFunction,
-} from "@medusajs/framework/http";
-
-async function logger(
-  req: MedusaRequest,
-  res: MedusaResponse,
-  next: MedusaNextFunction
-) {
-  console.log("Request received");
-  next();
-}
+import { defineMiddlewares } from "@medusajs/framework/http";
 
 export default defineMiddlewares({
   routes: [
     {
-      matcher: "/store/custom",
+      matcher: "/store/services/*",
       middlewares: [logger],
     },
   ],
-})
+});
 ```
 
-The `matcher` property can be either a string or a regular expression. The `middlewares` property accepts an array of middleware functions.
+## Testing
+
+```bash
+curl http://localhost:9000/store/services
+curl -X POST http://localhost:9000/store/estimate/wash-fold \
+  -H "Content-Type: application/json" \
+  -d '{"weight": 5}'
+```
+
+---
+
+[Medusa API Routes Docs](https://docs.medusajs.com/learn/fundamentals/api-routes) • [Backend README](../README.md)
