@@ -10,6 +10,8 @@ import PaymentContainer, {
   StripeCardContainer,
 } from "@modules/checkout/components/payment-container"
 import Divider from "@modules/common/components/divider"
+import { getPaymentInfoTitleKey } from "@lib/constants"
+import { useTranslations } from "next-intl"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
 
@@ -20,6 +22,9 @@ const Payment = ({
   cart: any
   availablePaymentMethods: any[]
 }) => {
+  const t = useTranslations("checkout")
+  const tCommon = useTranslations("common")
+  const tPayment = useTranslations("paymentProviders")
   const activeSession = cart.payment_collection?.payment_sessions?.find(
     (paymentSession: any) => paymentSession.status === "pending"
   )
@@ -104,6 +109,12 @@ const Payment = ({
     setError(null)
   }, [isOpen])
 
+  const getPaymentTitle = (providerId?: string | null) => {
+    const titleKey = getPaymentInfoTitleKey(providerId ?? undefined)
+
+    return titleKey ? tPayment(titleKey) : providerId
+  }
+
   return (
     <div className="bg-white">
       <div className="flex flex-row items-center justify-between mb-6">
@@ -117,7 +128,7 @@ const Payment = ({
             }
           )}
         >
-          Payment
+          {t("paymentSection")}
           {!isOpen && paymentReady && <CheckCircleSolid />}
         </Heading>
         {!isOpen && paymentReady && (
@@ -127,7 +138,7 @@ const Payment = ({
               className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
               data-testid="edit-payment-button"
             >
-              Edit
+              {tCommon("edit")}
             </button>
           </Text>
         )}
@@ -167,13 +178,13 @@ const Payment = ({
           {paidByGiftcard && (
             <div className="flex flex-col w-1/3">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
+                {t("paymentMethod")}
               </Text>
               <Text
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method-summary"
               >
-                Gift card
+                {t("giftCard")}
               </Text>
             </div>
           )}
@@ -195,8 +206,8 @@ const Payment = ({
             data-testid="submit-payment-button"
           >
             {!activeSession && isStripeLike(selectedPaymentMethod)
-              ? " Enter card details"
-              : "Continue to review"}
+              ? t("enterPaymentDetails")
+              : t("continueToReview")}
           </Button>
         </div>
 
@@ -205,19 +216,18 @@ const Payment = ({
             <div className="flex items-start gap-x-1 w-full">
               <div className="flex flex-col w-1/3">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                  Payment method
+                  {t("paymentMethod")}
                 </Text>
                 <Text
                   className="txt-medium text-ui-fg-subtle"
                   data-testid="payment-method-summary"
                 >
-                  {paymentInfoMap[activeSession?.provider_id]?.title ||
-                    activeSession?.provider_id}
+                  {getPaymentTitle(activeSession?.provider_id)}
                 </Text>
               </div>
               <div className="flex flex-col w-1/3">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                  Payment details
+                  {t("paymentDetails")}
                 </Text>
                 <div
                   className="flex gap-2 txt-medium text-ui-fg-subtle items-center"
@@ -231,7 +241,7 @@ const Payment = ({
                   <Text>
                     {isStripeLike(selectedPaymentMethod) && cardBrand
                       ? cardBrand
-                      : "Another step will appear"}
+                      : t("anotherStepWillAppear")}
                   </Text>
                 </div>
               </div>
@@ -239,13 +249,13 @@ const Payment = ({
           ) : paidByGiftcard ? (
             <div className="flex flex-col w-1/3">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
+                {t("paymentMethod")}
               </Text>
               <Text
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method-summary"
               >
-                Gift card
+                {t("giftCard")}
               </Text>
             </div>
           ) : null}

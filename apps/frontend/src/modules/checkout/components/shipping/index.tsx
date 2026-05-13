@@ -7,9 +7,11 @@ import { convertToLocale } from "@lib/util/money"
 import { CheckCircleSolid, Loader } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import { Button, clx, Heading, Text } from "@medusajs/ui"
+import { getLocalizedField } from "@lib/util/localized-content"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import Divider from "@modules/common/components/divider"
 import MedusaRadio from "@modules/common/components/radio"
+import { useLocale, useTranslations } from "next-intl"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -51,6 +53,9 @@ const Shipping: React.FC<ShippingProps> = ({
   cart,
   availableShippingMethods,
 }) => {
+  const locale = useLocale()
+  const t = useTranslations("checkout")
+  const tCommon = useTranslations("common")
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingPrices, setIsLoadingPrices] = useState(true)
 
@@ -148,6 +153,12 @@ const Shipping: React.FC<ShippingProps> = ({
     setError(null)
   }, [isOpen])
 
+  const getShippingLabel = (
+    option: HttpTypes.StoreCartShippingOption | HttpTypes.StoreCartShippingMethod
+  ) => {
+    return getLocalizedField(option, "name", locale)
+  }
+
   return (
     <div className="bg-white">
       <div className="flex flex-row items-center justify-between mb-6">
@@ -161,7 +172,7 @@ const Shipping: React.FC<ShippingProps> = ({
             }
           )}
         >
-          Delivery
+          {t("deliverySection")}
           {!isOpen && (cart.shipping_methods?.length ?? 0) > 0 && (
             <CheckCircleSolid />
           )}
@@ -172,24 +183,24 @@ const Shipping: React.FC<ShippingProps> = ({
           cart?.email && (
             <Text>
               <button
-                onClick={handleEdit}
-                className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
-                data-testid="edit-delivery-button"
-              >
-                Edit
-              </button>
-            </Text>
-          )}
+              onClick={handleEdit}
+              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+              data-testid="edit-delivery-button"
+            >
+              {tCommon("edit")}
+            </button>
+          </Text>
+        )}
       </div>
       {isOpen ? (
         <>
           <div className="grid">
             <div className="flex flex-col">
               <span className="font-medium txt-medium text-ui-fg-base">
-                Shipping method
+                {t("shippingMethod")}
               </span>
               <span className="mb-4 text-ui-fg-muted txt-medium">
-                How would you like you order delivered
+                {t("howWouldYouLikeOrderDelivered")}
               </span>
             </div>
             <div data-testid="delivery-options-container">
@@ -223,7 +234,7 @@ const Shipping: React.FC<ShippingProps> = ({
                           checked={showPickupOptions === PICKUP_OPTION_ON}
                         />
                         <span className="text-base-regular">
-                          Pick up your order
+                          {t("pickupYourOrder")}
                         </span>
                       </div>
                       <span className="justify-self-end text-ui-fg-base">
@@ -267,7 +278,7 @@ const Shipping: React.FC<ShippingProps> = ({
                             checked={option.id === shippingMethodId}
                           />
                           <span className="text-base-regular">
-                            {option.name}
+                            {getShippingLabel(option)}
                           </span>
                         </div>
                         <span className="justify-self-end text-ui-fg-base">
@@ -299,10 +310,10 @@ const Shipping: React.FC<ShippingProps> = ({
             <div className="grid">
               <div className="flex flex-col">
                 <span className="font-medium txt-medium text-ui-fg-base">
-                  Store
+                  {t("store")}
                 </span>
                 <span className="mb-4 text-ui-fg-muted txt-medium">
-                  Choose a store near you
+                  {t("chooseStoreNearYou")}
                 </span>
               </div>
               <div data-testid="delivery-options-container">
@@ -338,7 +349,7 @@ const Shipping: React.FC<ShippingProps> = ({
                             />
                             <div className="flex flex-col">
                               <span className="text-base-regular">
-                                {option.name}
+                                {getShippingLabel(option)}
                               </span>
                               <span className="text-base-regular text-ui-fg-muted">
                                 {formatAddress(
@@ -376,7 +387,7 @@ const Shipping: React.FC<ShippingProps> = ({
               disabled={!cart.shipping_methods?.[0]}
               data-testid="submit-delivery-option-button"
             >
-              Continue to payment
+              {t("continueToPayment")}
             </Button>
           </div>
         </>
@@ -386,10 +397,10 @@ const Shipping: React.FC<ShippingProps> = ({
             {cart && (cart.shipping_methods?.length ?? 0) > 0 && (
               <div className="flex flex-col w-1/3">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                  Method
+                  {t("method")}
                 </Text>
                 <Text className="txt-medium text-ui-fg-subtle">
-                  {cart.shipping_methods!.at(-1)!.name}{" "}
+                  {getShippingLabel(cart.shipping_methods!.at(-1)!)}{" "}
                   {convertToLocale({
                     amount: cart.shipping_methods!.at(-1)!.amount!,
                     currency_code: cart?.currency_code,

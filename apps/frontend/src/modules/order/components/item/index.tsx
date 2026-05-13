@@ -5,13 +5,18 @@ import LineItemOptions from "@modules/common/components/line-item-options"
 import LineItemPrice from "@modules/common/components/line-item-price"
 import LineItemUnitPrice from "@modules/common/components/line-item-unit-price"
 import Thumbnail from "@modules/products/components/thumbnail"
+import { getLocale } from "next-intl/server"
+import { getLocalizedField } from "@lib/util/localized-content"
 
 type ItemProps = {
   item: HttpTypes.StoreCartLineItem | HttpTypes.StoreOrderLineItem
   currencyCode: string
 }
 
-const Item = ({ item, currencyCode }: ItemProps) => {
+const Item = async ({ item, currencyCode }: ItemProps) => {
+  const locale = await getLocale()
+  const product = item.variant?.product ?? (item as { product?: HttpTypes.StoreProduct }).product
+
   return (
     <Table.Row className="w-full" data-testid="product-row">
       <Table.Cell className="!pl-0 p-4 w-24">
@@ -25,9 +30,15 @@ const Item = ({ item, currencyCode }: ItemProps) => {
           className="txt-medium-plus text-ui-fg-base"
           data-testid="product-name"
         >
-          {item.product_title}
+          {product
+            ? getLocalizedField(product, "title", locale)
+            : item.product_title}
         </Text>
-        <LineItemOptions variant={item.variant} data-testid="product-variant" />
+        <LineItemOptions
+          variant={item.variant}
+          product={product}
+          data-testid="product-variant"
+        />
       </Table.Cell>
 
       <Table.Cell className="!pr-0">

@@ -6,8 +6,10 @@ import { Text, Heading, Input, Button, IconButton, Toaster } from "@medusajs/ui"
 import { SubmitButton } from "@modules/checkout/components/submit-button"
 import { CheckCircleMiniSolid, XCircleSolid } from "@medusajs/icons"
 import { useEffect, useState } from "react"
+import { useTranslations } from "next-intl"
 
 export default function TransferRequestForm() {
+  const t = useTranslations("order")
   const [showSuccess, setShowSuccess] = useState(false)
 
   const [state, formAction] = useActionState(createTransferRequest, {
@@ -27,11 +29,10 @@ export default function TransferRequestForm() {
       <div className="grid sm:grid-cols-2 items-center gap-x-8 gap-y-4 w-full">
         <div className="flex flex-col gap-y-1">
           <Heading level="h3" className="text-lg text-neutral-950">
-            Order transfers
+            {t("orderTransfers")}
           </Heading>
           <Text className="text-base-regular text-neutral-500">
-            Can&apos;t find the order you are looking for?
-            <br /> Connect an order to your account.
+            {t("connectOrder")}
           </Text>
         </div>
         <form
@@ -39,12 +40,16 @@ export default function TransferRequestForm() {
           className="flex flex-col gap-y-1 sm:items-end"
         >
           <div className="flex flex-col gap-y-2 w-full">
-            <Input className="w-full" name="order_id" placeholder="Order ID" />
+            <Input
+              className="w-full"
+              name="order_id"
+              placeholder={t("orderIdPlaceholder")}
+            />
             <SubmitButton
               variant="secondary"
               className="w-fit whitespace-nowrap self-end"
             >
-              Request transfer
+              {t("requestTransfer")}
             </SubmitButton>
           </div>
         </form>
@@ -60,10 +65,10 @@ export default function TransferRequestForm() {
             <CheckCircleMiniSolid className="w-4 h-4 text-emerald-500" />
             <div className="flex flex-col gap-y-1">
               <Text className="text-medim-pl text-neutral-950">
-                Transfer for order {state.order?.id} requested
+                {t("transferRequested", { orderId: state.order?.id })}
               </Text>
               <Text className="text-base-regular text-neutral-600">
-                Transfer request email sent to {state.order?.email}
+                {t("transferRequestSent", { email: state.order?.email })}
               </Text>
             </div>
           </div>

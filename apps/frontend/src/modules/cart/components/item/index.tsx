@@ -13,6 +13,8 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import Spinner from "@modules/common/icons/spinner"
 import Thumbnail from "@modules/products/components/thumbnail"
 import { useState } from "react"
+import { useLocale } from "next-intl"
+import { getLocalizedField } from "@lib/util/localized-content"
 
 type ItemProps = {
   item: HttpTypes.StoreCartLineItem
@@ -21,8 +23,10 @@ type ItemProps = {
 }
 
 const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
+  const locale = useLocale()
   const [updating, setUpdating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const product = item.variant?.product ?? (item as { product?: HttpTypes.StoreProduct }).product
 
   const changeQuantity = async (quantity: number) => {
     setError(null)
@@ -67,9 +71,15 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
           className="txt-medium-plus text-ui-fg-base"
           data-testid="product-title"
         >
-          {item.product_title}
+          {product
+            ? getLocalizedField(product, "title", locale)
+            : item.product_title}
         </Text>
-        <LineItemOptions variant={item.variant} data-testid="product-variant" />
+        <LineItemOptions
+          variant={item.variant}
+          product={product}
+          data-testid="product-variant"
+        />
       </Table.Cell>
 
       {type === "full" && (

@@ -32,7 +32,7 @@ const Login = ({ setCurrentView }: Props) => {
             label={tCommon("email")}
             name="email"
             type="email"
-            title="Enter a valid email address."
+            title={tCommon("validEmail")}
             autoComplete="email"
             required
             data-testid="email-input"

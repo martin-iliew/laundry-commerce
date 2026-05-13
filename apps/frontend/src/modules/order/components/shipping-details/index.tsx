@@ -1,3 +1,5 @@
+import { getLocale, getTranslations } from "next-intl/server"
+import { getLocalizedField } from "@lib/util/localized-content"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
 import { Heading, Text } from "@medusajs/ui"
@@ -8,11 +10,14 @@ type ShippingDetailsProps = {
   order: HttpTypes.StoreOrder
 }
 
-const ShippingDetails = ({ order }: ShippingDetailsProps) => {
+const ShippingDetails = async ({ order }: ShippingDetailsProps) => {
+  const t = await getTranslations("order")
+  const locale = await getLocale()
+
   return (
     <div>
       <Heading level="h2" className="flex flex-row text-3xl-regular my-6">
-        Delivery
+        {t("deliverySection")}
       </Heading>
       <div className="flex items-start gap-x-8">
         <div
@@ -20,7 +25,7 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
           data-testid="shipping-address-summary"
         >
           <Text className="txt-medium-plus text-ui-fg-base mb-1">
-            Shipping Address
+            {t("shippingAddress")}
           </Text>
           <Text className="txt-medium text-ui-fg-subtle">
             {order.shipping_address?.first_name}{" "}
@@ -43,7 +48,9 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
           className="flex flex-col w-1/3 "
           data-testid="shipping-contact-summary"
         >
-          <Text className="txt-medium-plus text-ui-fg-base mb-1">Contact</Text>
+          <Text className="txt-medium-plus text-ui-fg-base mb-1">
+            {t("contact")}
+          </Text>
           <Text className="txt-medium text-ui-fg-subtle">
             {order.shipping_address?.phone}
           </Text>
@@ -54,14 +61,21 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
           className="flex flex-col w-1/3"
           data-testid="shipping-method-summary"
         >
-          <Text className="txt-medium-plus text-ui-fg-base mb-1">Method</Text>
+          <Text className="txt-medium-plus text-ui-fg-base mb-1">
+            {t("shippingMethod")}
+          </Text>
           <Text className="txt-medium text-ui-fg-subtle">
-            {(order as any).shipping_methods[0]?.name} (
-            {convertToLocale({
-              amount: order.shipping_methods?.[0].total ?? 0,
-              currency_code: order.currency_code,
+            {t("shippingMethodWithAmount", {
+              name: getLocalizedField(
+                (order as any).shipping_methods?.[0],
+                "name",
+                locale
+              ),
+              amount: convertToLocale({
+                amount: order.shipping_methods?.[0].total ?? 0,
+                currency_code: order.currency_code,
+              }),
             })}
-            )
           </Text>
         </div>
       </div>
