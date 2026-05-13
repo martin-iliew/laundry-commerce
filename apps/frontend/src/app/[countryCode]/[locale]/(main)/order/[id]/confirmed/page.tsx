@@ -4,11 +4,18 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 type Props = {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string; locale: string }>
 }
-export const metadata: Metadata = {
-  title: "Order Confirmed",
-  description: "You purchase was successful",
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const { getTranslations } = await import("next-intl/server")
+  const t = await getTranslations({ locale, namespace: "order" })
+
+  return {
+    title: t("confirmed"),
+    description: t("confirmedDescription"),
+  }
 }
 
 export default async function OrderConfirmedPage(props: Props) {

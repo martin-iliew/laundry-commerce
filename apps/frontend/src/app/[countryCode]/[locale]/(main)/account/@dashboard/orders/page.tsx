@@ -6,12 +6,23 @@ import { listOrders } from "@lib/data/orders"
 import Divider from "@modules/common/components/divider"
 import TransferRequestForm from "@modules/account/components/transfer-request-form"
 
-export const metadata: Metadata = {
-  title: "Orders",
-  description: "Overview of your previous orders.",
+type Props = {
+  params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const { getTranslations } = await import("next-intl/server")
+  const t = await getTranslations({ locale, namespace: "account" })
+
+  return {
+    title: t("orders"),
+    description: t("ordersPageDescription"),
+  }
 }
 
 export default async function Orders() {
+  const t = await (await import("next-intl/server")).getTranslations("account")
   const orders = await listOrders()
 
   if (!orders) {
@@ -21,11 +32,8 @@ export default async function Orders() {
   return (
     <div className="w-full" data-testid="orders-page-wrapper">
       <div className="mb-8 flex flex-col gap-y-4">
-        <h1 className="text-2xl-semi">Orders</h1>
-        <p className="text-base-regular">
-          View your previous orders and their status. You can also create
-          returns or exchanges for your orders if needed.
-        </p>
+        <h1 className="text-2xl-semi">{t("orders")}</h1>
+        <p className="text-base-regular">{t("ordersDescription")}</p>
       </div>
       <div>
         <OrderOverview orders={orders} />

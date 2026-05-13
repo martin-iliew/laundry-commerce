@@ -5,9 +5,19 @@ import { notFound } from "next/navigation"
 import { retrieveCustomer } from "@lib/data/customer"
 import { listOrders } from "@lib/data/orders"
 
-export const metadata: Metadata = {
-  title: "Account",
-  description: "Overview of your account activity.",
+type Props = {
+  params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const { getTranslations } = await import("next-intl/server")
+  const t = await getTranslations({ locale, namespace: "account" })
+
+  return {
+    title: t("title"),
+    description: t("description"),
+  }
 }
 
 export default async function OverviewTemplate() {

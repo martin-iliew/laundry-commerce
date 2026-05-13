@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 
 import { getCollectionByHandle, listCollections } from "@lib/data/collections"
 import { listRegions } from "@lib/data/regions"
+import { getLocalizedField } from "@lib/util/localized-content"
 import { StoreCollection, StoreRegion } from "@medusajs/types"
 import CollectionTemplate from "@modules/collections/templates"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
@@ -20,7 +21,7 @@ export const PRODUCT_LIMIT = 12
 
 export async function generateStaticParams() {
   const { collections } = await listCollections({
-    fields: "*products",
+    fields: "id, handle",
   })
 
   if (!collections) {
@@ -39,12 +40,17 @@ export async function generateStaticParams() {
     (collection: StoreCollection) => collection.handle
   )
 
+  const locales = ["en", "bg"]
+
   const staticParams = countryCodes
     ?.map((countryCode: string) =>
-      collectionHandles.map((handle: string | undefined) => ({
-        countryCode,
-        handle,
-      }))
+      collectionHandles.flatMap((handle: string | undefined) => 
+        locales.map((locale) => ({
+          countryCode,
+          locale,
+          handle,
+        }))
+      )
     )
     .flat()
 
@@ -59,9 +65,16 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     notFound()
   }
 
+  const { getTranslations } = await import("next-intl/server")
+  const t = await getTranslations({
+    locale: params.locale,
+    namespace: "metadata",
+  })
+  const title = getLocalizedField(collection, "title", params.locale)
+
   const metadata = {
-    title: `${collection.title} | Medusa Store`,
-    description: `${collection.title} collection`,
+    title: t("collectionTitle", { title }),
+    description: t("collectionDescription", { title }),
   } as Metadata
 
   return metadata

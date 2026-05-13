@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 
 import { getCategoryByHandle, listCategories } from "@lib/data/categories"
 import { listRegions } from "@lib/data/regions"
+import { getLocalizedField } from "@lib/util/localized-content"
 import { StoreRegion } from "@medusajs/types"
 import CategoryTemplate from "@modules/categories/templates"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
@@ -31,12 +32,17 @@ export async function generateStaticParams() {
     (category: any) => category.handle
   )
 
+  const locales = ["en", "bg"]
+
   const staticParams = countryCodes
     ?.map((countryCode: string | undefined) =>
-      categoryHandles.map((handle: any) => ({
-        countryCode,
-        category: [handle],
-      }))
+      categoryHandles.flatMap((handle: any) => 
+        locales.map((locale) => ({
+          countryCode,
+          locale,
+          category: [handle],
+        }))
+      )
     )
     .flat()
 
@@ -47,13 +53,19 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params
   try {
     const productCategory = await getCategoryByHandle(params.category)
+    const { getTranslations } = await import("next-intl/server")
+    const t = await getTranslations({
+      locale: params.locale,
+      namespace: "metadata",
+    })
+    const title = getLocalizedField(productCategory, "name", params.locale)
 
-    const title = productCategory.name + " | Medusa Store"
-
-    const description = productCategory.description ?? `${title} category.`
+    const description =
+      getLocalizedField(productCategory, "description", params.locale) ||
+      t("categoryDescription", { title })
 
     return {
-      title: `${title} | Medusa Store`,
+      title: t("categoryTitle", { title }),
       description,
       alternates: {
         canonical: `${params.category.join("/")}`,

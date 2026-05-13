@@ -3,11 +3,6 @@ import { Metadata } from "next"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import StoreTemplate from "@modules/store/templates"
 
-export const metadata: Metadata = {
-  title: "Store",
-  description: "Explore all of our products.",
-}
-
 export const revalidate = 30
 
 type Params = {
@@ -18,6 +13,17 @@ type Params = {
   params: Promise<{
     countryCode: string
   }>
+}
+
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const { locale } = await params
+  const { getTranslations } = await import("next-intl/server")
+  const t = await getTranslations({ locale, namespace: "store" })
+
+  return {
+    title: t("title"),
+    description: t("description"),
+  }
 }
 
 export default async function StorePage(props: Params) {

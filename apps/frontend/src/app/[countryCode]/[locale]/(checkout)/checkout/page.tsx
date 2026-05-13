@@ -6,8 +6,18 @@ import CheckoutSummary from "@modules/checkout/templates/checkout-summary"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-export const metadata: Metadata = {
-  title: "Checkout",
+type Props = {
+  params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const { getTranslations } = await import("next-intl/server")
+  const t = await getTranslations({ locale, namespace: "checkout" })
+
+  return {
+    title: t("title"),
+  }
 }
 
 export default async function Checkout() {

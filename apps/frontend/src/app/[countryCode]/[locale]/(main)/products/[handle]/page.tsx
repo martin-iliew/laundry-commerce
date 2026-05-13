@@ -2,6 +2,7 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { listProducts } from "@lib/data/products"
 import { getRegion, listRegions } from "@lib/data/regions"
+import { getLocalizedField } from "@lib/util/localized-content"
 import ProductTemplate from "@modules/products/templates"
 import { HttpTypes } from "@medusajs/types"
 
@@ -97,13 +98,17 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   // Use getTranslations for metadata
   const { getTranslations } = await import("next-intl/server")
   const t = await getTranslations({ locale, namespace: "product" })
+  const title = getLocalizedField(product, "title", locale)
+  const description =
+    getLocalizedField(product, "description", locale) ||
+    t("metaDescription", { title })
 
   return {
-    title: t("metaTitle", { title: product.title }),
-    description: product.description || t("metaDescription", { title: product.title }),
+    title: t("metaTitle", { title }),
+    description,
     openGraph: {
-      title: t("metaTitle", { title: product.title }),
-      description: product.description || t("metaDescription", { title: product.title }),
+      title: t("metaTitle", { title }),
+      description,
       images: product.thumbnail ? [product.thumbnail] : [],
     },
   }
