@@ -49,6 +49,13 @@ export function isValidLocale(locale: string): locale is Locale {
 }
 
 /**
+ * Normalize a potentially missing route locale to a supported locale.
+ */
+export function getRouteLocale(locale?: string): Locale {
+  return locale && isValidLocale(locale) ? locale : "en";
+}
+
+/**
  * Switch to a different locale from current path
  * @param currentPathname - Current URL pathname
  * @param targetLocale - Target locale to switch to

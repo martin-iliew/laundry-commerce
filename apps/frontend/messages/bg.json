@@ -25,10 +25,19 @@
     "submit": "Изпрати",
     "close": "Затвори",
     "loading": "Зареждане...",
-    "selectOption": "Изберете {option}"
+    "selectOption": "Изберете {option}",
+    "validEmail": "Въведете валиден имейл адрес.",
+    "item": "Артикул",
+    "quantity": "Количество",
+    "price": "Цена",
+    "total": "Общо",
+    "summary": "Обобщение",
+    "variant": "Вариант"
   },
   "nav": {
-    "storeName": "Medusa Магазин",
+    "storeName": "Dirty Labs",
+    "home": "Начало",
+    "store": "Магазин",
     "account": "Профил",
     "cart": "Количка",
     "cartWithCount": "Количка ({count})",
@@ -39,33 +48,55 @@
     "description": "Разгледайте всички наши продукти.",
     "exploreProducts": "Разгледай продукти",
     "allProducts": "Всички продукти",
+    "viewAll": "Виж всички",
     "sort": "Сортирай",
     "sortLatest": "Най-нови",
     "sortPriceLowHigh": "Цена: Ниска -> Висока",
     "sortPriceHighLow": "Цена: Висока -> Ниска",
     "noProducts": "Няма намерени продукти",
     "filter": "Филтър",
-    "clearFilters": "Изчисти филтри"
+    "clearFilters": "Изчисти филтри",
+    "goToAllProductsPage": "Отиди на страницата с всички продукти"
   },
   "product": {
     "addToCart": "Добави в количката",
     "outOfStock": "Няма наличност",
     "inStock": "В наличност",
     "select": "Изберете {option}",
+    "selectVariant": "Изберете вариант",
+    "selectOptions": "Изберете опции",
     "quantity": "Количество",
     "productInfo": "Информация за продукта",
     "shipping": "Доставка и връщане",
-    "metaTitle": "{title} | Medusa Магазин",
+    "metaTitle": "{title} | Dirty Labs",
     "metaDescription": "{title}",
+    "relatedProductsLabel": "Свързани продукти",
+    "relatedProductsDescription": "Може да искате да разгледате и тези продукти.",
     "demoCreated": "Демо продуктът беше създаден успешно! 🎉",
     "demoDescription": "Сега можете да продължите настройката на магазина в администрацията.",
     "continueSetup": "Продължи настройката"
+  },
+  "productTabs": {
+    "productInformation": "Информация за продукта",
+    "shippingAndReturns": "Доставка и връщане",
+    "material": "Материал",
+    "countryOfOrigin": "Страна на произход",
+    "type": "Тип",
+    "weight": "Тегло",
+    "dimensions": "Размери",
+    "fastDeliveryTitle": "Бърза доставка",
+    "fastDeliveryDescription": "Пратката ви ще пристигне за 3-5 работни дни до избран пункт или директно до вашия дом.",
+    "simpleExchangesTitle": "Лесна замяна",
+    "simpleExchangesDescription": "Размерът не е съвсем точен? Няма проблем - ще заменим продукта с нов.",
+    "easyReturnsTitle": "Лесно връщане",
+    "easyReturnsDescription": "Просто върнете продукта и ние ще възстановим сумата. Без излишни въпроси - ще направим всичко възможно процесът да е лесен."
   },
   "cart": {
     "title": "Количка",
     "description": "Преглед на количката",
     "emptyCart": "Количка",
     "emptyMessage": "Нямате нищо в количката си. Нека променим това, използвайте линка по-долу, за да започнете да разглеждате нашите продукти.",
+    "subtotalExcludingShippingAndTaxes": "Междинна сума (без доставка и данъци)",
     "subtotal": "Междинна сума",
     "shipping": "Доставка",
     "tax": "Данък",
@@ -80,7 +111,13 @@
     "remove": "Премахни",
     "freeShipping": "Безплатна доставка",
     "freeShippingMessage": "Имате право на безплатна доставка!",
-    "almostFreeShipping": "Остават Ви още {amount} до безплатна доставка!"
+    "almostFreeShipping": "Остават Ви още {amount} до безплатна доставка!",
+    "excludingTaxes": "(без данъци)",
+    "goToCart": "Към количката",
+    "emptyBag": "Чантата ви за пазаруване е празна.",
+    "cartTransferError": "Нещо се обърка, докато се опитвахме да прехвърлим количката ви",
+    "runTransferAgain": "Стартирай прехвърлянето отново",
+    "transferring": "Прехвърляне..."
   },
   "checkout": {
     "title": "Плащане",
@@ -95,10 +132,36 @@
     "selectPayment": "Изберете метод на плащане",
     "enterAddress": "Въведете адреса си",
     "deliveryMethod": "Доставка",
+    "deliverySection": "Доставка",
+    "paymentSection": "Плащане",
+    "goToCheckout": "Към плащане",
     "discountCode": "Промо код",
     "applyDiscount": "Приложи",
     "giftCard": "Ваучер",
-    "or": "или"
+    "or": "или",
+    "paymentDetails": "Детайли за плащането",
+    "enterCardDetails": "Въведете данните на картата си",
+    "enterPaymentDetails": "Въведете данни на картата",
+    "anotherStepWillAppear": "Ще се появи още една стъпка",
+    "continueToReview": "Продължи към преглед",
+    "continueToPayment": "Продължи към плащане",
+    "continueToDelivery": "Продължи към доставка",
+    "howWouldYouLikeOrderDelivered": "Как бихте искали да бъде доставена поръчката ви",
+    "pickupYourOrder": "Вземете поръчката си от магазин",
+    "store": "Магазин",
+    "chooseStoreNearYou": "Изберете магазин близо до вас",
+    "method": "Метод",
+    "contact": "Контакт",
+    "useSavedAddress": "Здравейте {name}, искате ли да използвате някой от запазените си адреси?",
+    "inYourCart": "Във вашата количка",
+    "shippingTo": "Доставка до:",
+    "attention": "Внимание:",
+    "forTestingOnly": "Само за тестови цели.",
+    "backToShoppingCart": "Назад към количката",
+    "reviewDisclaimer": "С натискането на бутона за поръчка потвърждавате, че сте прочели, разбрали и приемате нашите Условия за ползване, Условия за продажба и Политика за връщане и че сте запознати с Политиката за поверителност на Dirty Labs.",
+    "addPromotionCodes": "Добави промо код(ове)",
+    "promotionsApplied": "Приложени промоции:",
+    "removeDiscountCodeFromOrder": "Премахни кода за отстъпка от поръчката"
   },
   "account": {
     "title": "Профил",
@@ -107,17 +170,20 @@
     "signIn": "Вход",
     "signInDescription": "Влезте, за да получите подобрено пазаруване.",
     "signUp": "Регистрирай се",
-    "register": "Станете член на Medusa Магазин",
-    "registerDescription": "Създайте профил в Medusa Магазин и получете достъп до подобрено пазаруване.",
+    "register": "Станете член на Dirty Labs",
+    "registerDescription": "Създайте профил в Dirty Labs и получете достъп до подобрено пазаруване.",
     "notAMember": "Нямате профил?",
     "alreadyMember": "Вече сте член?",
     "signOut": "Изход",
     "profile": "Профил",
-    "profileDescription": "Прегледайте и редактирайте вашия профил в Medusa Магазин.",
+    "profileDescription": "Прегледайте и редактирайте вашия профил в Dirty Labs.",
+    "profilePageDescription": "Прегледайте и актуализирайте информацията в профила си, включително име, имейл и телефон. Можете също да обновите адреса си за фактуриране или да смените паролата си.",
     "orders": "Поръчки",
     "ordersDescription": "Прегледайте предишните си поръчки и техния статус. Можете също да създавате връщания или замени на поръчките си, ако е необходимо.",
+    "ordersPageDescription": "Преглед на предишните ви поръчки.",
     "addresses": "Адреси",
     "addressesDescription": "Прегледайте и актуализирайте адресите си за доставка. Можете да добавите колкото искате. Запазването на адресите ще ги направи достъпни по време на плащане.",
+    "addressesPageDescription": "Прегледайте адресите си",
     "shippingAddresses": "Адреси за доставка",
     "overview": "Преглед",
     "signedInAs": "Влезли сте като:",
@@ -125,7 +191,12 @@
     "noOrders": "Няма какво да се види тук",
     "noOrdersDescription": "Все още нямате поръчки, нека променим това {link}",
     "greetingMessage": "Здравейте {name}",
+    "completed": "Попълнено",
+    "saved": "Запазени",
+    "datePlaced": "Дата на поръчка",
+    "totalAmount": "Обща сума",
     "viewOrder": "Отиди на поръчка #{orderId}",
+    "noRecentOrders": "Няма скорошни поръчки",
     "billingAddressTitle": "Адрес за фактуриране",
     "name": "Име",
     "emailAddress": "Имейл",
@@ -135,7 +206,23 @@
     "editAddress": "Редактирай адрес",
     "saveChanges": "Запази промените",
     "deleteAddress": "Изтрий адрес",
-    "errorOccurred": "Възникна грешка, моля опитайте отново"
+    "errorOccurred": "Възникна грешка, моля опитайте отново",
+    "signInPageDescription": "Влезте в профила си в Dirty Labs.",
+    "byCreatingAccount": "Създавайки профил, вие се съгласявате с",
+    "privacyPolicy": "Политиката за поверителност",
+    "termsOfUse": "Условията за ползване",
+    "and": "и",
+    "continueShopping": "Продължи пазаруването",
+    "gotQuestions": "Имате въпроси?",
+    "customerServiceCopy": "Можете да намерите често задавани въпроси и отговори на страницата ни за обслужване на клиенти.",
+    "customerService": "Обслужване на клиенти",
+    "updatedSuccessfully": "{label} беше актуализирано успешно",
+    "oldPassword": "Стара парола",
+    "newPassword": "Нова парола",
+    "confirmPassword": "Потвърдете паролата",
+    "passwordUpdateNotImplemented": "Обновяването на парола все още не е реализирано",
+    "noBillingAddress": "Няма адрес за фактуриране",
+    "addressIdRequired": "Изисква се идентификатор на адрес"
   },
   "order": {
     "title": "Поръчка #{orderId}",
@@ -163,7 +250,48 @@
     "declineTransfer": "Откажи прехвърлянето",
     "orderTransferred": "Поръчката е прехвърлена!",
     "transferSuccess": "Поръчка {orderId} беше успешно прехвърлена на новия собственик.",
-    "transferError": "Възникна грешка при приемането на прехвърлянето. Моля, опитайте отново."
+    "transferError": "Възникна грешка при приемането на прехвърлянето. Моля, опитайте отново.",
+    "confirmationSentTo": "Изпратихме детайлите за потвърждение на поръчката на",
+    "paymentSection": "Плащане",
+    "paymentDetails": "Детайли за плащането",
+    "deliverySection": "Доставка",
+    "shippingMethodWithAmount": "{name} ({amount})",
+    "backToOverview": "Назад към прегледа",
+    "thankYou": "Благодарим ви!",
+    "placedSuccessfully": "Поръчката ви беше направена успешно.",
+    "itemsCount": "{count, plural, one {# артикул} other {# артикула}}",
+    "more": "още",
+    "seeDetails": "Виж детайли",
+    "cardEnding": "**** **** **** {last4}",
+    "paymentRecordedAt": "{amount} платено на {timestamp}",
+    "orderTransfers": "Прехвърляне на поръчки",
+    "connectOrder": "Не можете да намерите поръчката, която търсите? Свържете поръчка към профила си.",
+    "orderIdPlaceholder": "Номер на поръчка",
+    "orderIdRequired": "Изисква се номер на поръчка",
+    "requestTransfer": "Заяви прехвърляне",
+    "transferRequested": "Заявено е прехвърляне за поръчка {orderId}",
+    "transferRequestSent": "Изпратен е имейл за прехвърляне до {email}",
+    "fulfillmentStatusValues": {
+      "notFulfilled": "Неизпълнена",
+      "partiallyFulfilled": "Частично изпълнена",
+      "fulfilled": "Изпълнена",
+      "partiallyShipped": "Частично изпратена",
+      "shipped": "Изпратена",
+      "delivered": "Доставена",
+      "canceled": "Отказана"
+    },
+    "paymentStatusValues": {
+      "notPaid": "Неплатена",
+      "awaiting": "В изчакване",
+      "authorized": "Авторизирана",
+      "partiallyAuthorized": "Частично авторизирана",
+      "captured": "Прихваната",
+      "partiallyCaptured": "Частично прихваната",
+      "refunded": "Възстановена",
+      "partiallyRefunded": "Частично възстановена",
+      "canceled": "Отказана",
+      "requiresAction": "Изисква действие"
+    }
   },
   "errors": {
     "pageNotFound": "Страницата не е намерена",
@@ -177,13 +305,54 @@
   "footer": {
     "categories": "Категории",
     "collections": "Колекции",
-    "allRightsReserved": "© {year} Medusa Магазин. Всички права запазени."
+    "resources": "Ресурси",
+    "documentation": "Документация",
+    "sourceCode": "Изходен код",
+    "allRightsReserved": "© {year} Dirty Labs. Всички права запазени."
   },
   "metadata": {
-    "defaultTitle": "Medusa Next.js Стартов шаблон",
-    "defaultDescription": "Високопроизводителен шаблон за електронна търговия с Next.js 15 и Medusa.",
-    "collectionTitle": "{title} | Medusa Магазин",
+    "defaultTitle": "Dirty Labs — Биоензимни почистващи продукти",
+    "defaultDescription": "Пазарувайте биоензимни почистващи продукти за пране, съдове и още. Ефективни срещу мръсотията, нежни към всичко останало.",
+    "collectionTitle": "{title} | Dirty Labs",
     "collectionDescription": "{title} колекция",
-    "categoryTitle": "{title} | Medusa Магазин"
+    "categoryTitle": "{title} | Dirty Labs",
+    "categoryDescription": "Категория {title}"
+  },
+  "paymentProviders": {
+    "creditCard": "Кредитна карта",
+    "ideal": "iDEAL",
+    "bancontact": "Bancontact",
+    "paypal": "PayPal",
+    "manualPayment": "Ръчно плащане"
+  },
+  "locales": {
+    "changeLanguage": "Смени езика",
+    "en": "Английски",
+    "bg": "Български"
+  },
+  "pricing": {
+    "from": "От",
+    "original": "Оригинална"
+  },
+  "home": {
+    "hero": {
+      "headline": "Чиста наука. По-чиста планета.",
+      "subheadline": "Почистващи продукти с биоензими — ефективни срещу мръсотията, нежни към всичко останало.",
+      "cta": "Пазарувай"
+    },
+    "features": {
+      "bioEnzymes": {
+        "title": "Биоензимна технология",
+        "description": "Ензимите Phytolase разграждат най-упоритите петна на молекулярно ниво — без агресивни химикали."
+      },
+      "hypoallergenic": {
+        "title": "Хипоалергенна формула",
+        "description": "Нежна за чувствителна кожа и безопасна за цялото семейство, включително бебета."
+      },
+      "ecoFriendly": {
+        "title": "Приятелски към планетата",
+        "description": "Ултраконцентрираните формули означават по-малко опаковки, по-малко отпадъци и по-малък отпечатък при всяко пране."
+      }
+    }
   }
 }

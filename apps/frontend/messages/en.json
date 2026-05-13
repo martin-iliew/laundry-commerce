@@ -25,10 +25,19 @@
     "submit": "Submit",
     "close": "Close",
     "loading": "Loading...",
-    "selectOption": "Select {option}"
+    "selectOption": "Select {option}",
+    "validEmail": "Enter a valid email address.",
+    "item": "Item",
+    "quantity": "Quantity",
+    "price": "Price",
+    "total": "Total",
+    "summary": "Summary",
+    "variant": "Variant"
   },
   "nav": {
-    "storeName": "Medusa Store",
+    "storeName": "Dirty Labs",
+    "home": "Home",
+    "store": "Store",
     "account": "Account",
     "cart": "Cart",
     "cartWithCount": "Cart ({count})",
@@ -39,6 +48,7 @@
     "description": "Explore all of our products.",
     "exploreProducts": "Explore products",
     "allProducts": "All products",
+    "viewAll": "View all",
     "sort": "Sort by",
     "sortLatest": "Latest Arrivals",
     "sortPriceLowHigh": "Price: Low -> High",
@@ -46,26 +56,48 @@
     "noProducts": "No products found",
     "filter": "Filter",
     "clearFilters": "Clear filters"
+    ,
+    "goToAllProductsPage": "Go to all products page"
   },
   "product": {
     "addToCart": "Add to cart",
     "outOfStock": "Out of stock",
     "inStock": "In stock",
     "select": "Select {option}",
+    "selectVariant": "Select variant",
+    "selectOptions": "Select options",
     "quantity": "Quantity",
     "productInfo": "Product Information",
     "shipping": "Shipping & Returns",
-    "metaTitle": "{title} | Medusa Store",
+    "metaTitle": "{title} | Dirty Labs",
     "metaDescription": "{title}",
+    "relatedProductsLabel": "Related products",
+    "relatedProductsDescription": "You might also want to check out these products.",
     "demoCreated": "Your demo product was successfully created! 🎉",
     "demoDescription": "You can now continue setting up your store in the admin.",
     "continueSetup": "Continue setup in admin"
+  },
+  "productTabs": {
+    "productInformation": "Product Information",
+    "shippingAndReturns": "Shipping & Returns",
+    "material": "Material",
+    "countryOfOrigin": "Country of origin",
+    "type": "Type",
+    "weight": "Weight",
+    "dimensions": "Dimensions",
+    "fastDeliveryTitle": "Fast delivery",
+    "fastDeliveryDescription": "Your package will arrive in 3-5 business days at your pick up location or in the comfort of your home.",
+    "simpleExchangesTitle": "Simple exchanges",
+    "simpleExchangesDescription": "Is the fit not quite right? No worries - we'll exchange your product for a new one.",
+    "easyReturnsTitle": "Easy returns",
+    "easyReturnsDescription": "Just return your product and we'll refund your money. No questions asked - we'll do our best to make sure your return is hassle-free."
   },
   "cart": {
     "title": "Cart",
     "description": "View your cart",
     "emptyCart": "Cart",
     "emptyMessage": "You don't have anything in your cart. Let's change that, use the link below to start browsing our products.",
+    "subtotalExcludingShippingAndTaxes": "Subtotal (excl. shipping and taxes)",
     "subtotal": "Subtotal",
     "shipping": "Shipping",
     "tax": "Tax",
@@ -81,6 +113,13 @@
     "freeShipping": "Free shipping",
     "freeShippingMessage": "You qualify for free shipping!",
     "almostFreeShipping": "You're {amount} away from free shipping!"
+    ,
+    "excludingTaxes": "(excl. taxes)",
+    "goToCart": "Go to cart",
+    "emptyBag": "Your shopping bag is empty.",
+    "cartTransferError": "Something went wrong when we tried to transfer your cart",
+    "runTransferAgain": "Run transfer again",
+    "transferring": "Transferring..."
   },
   "checkout": {
     "title": "Checkout",
@@ -95,10 +134,36 @@
     "selectPayment": "Select a payment method",
     "enterAddress": "Enter your address",
     "deliveryMethod": "Delivery",
+    "deliverySection": "Delivery",
+    "paymentSection": "Payment",
+    "goToCheckout": "Go to checkout",
     "discountCode": "Discount code",
     "applyDiscount": "Apply",
     "giftCard": "Gift card",
-    "or": "or"
+    "or": "or",
+    "paymentDetails": "Payment details",
+    "enterCardDetails": "Enter your card details",
+    "enterPaymentDetails": "Enter card details",
+    "anotherStepWillAppear": "Another step will appear",
+    "continueToReview": "Continue to review",
+    "continueToPayment": "Continue to payment",
+    "continueToDelivery": "Continue to delivery",
+    "howWouldYouLikeOrderDelivered": "How would you like your order delivered",
+    "pickupYourOrder": "Pick up your order",
+    "store": "Store",
+    "chooseStoreNearYou": "Choose a store near you",
+    "method": "Method",
+    "contact": "Contact",
+    "useSavedAddress": "Hi {name}, do you want to use one of your saved addresses?",
+    "inYourCart": "In your cart",
+    "shippingTo": "Shipping to:",
+    "attention": "Attention:",
+    "forTestingOnly": "For testing purposes only.",
+    "backToShoppingCart": "Back to shopping cart",
+    "reviewDisclaimer": "By clicking the Place Order button, you confirm that you have read, understand and accept our Terms of Use, Terms of Sale and Returns Policy and acknowledge that you have read Dirty Labs's Privacy Policy.",
+    "addPromotionCodes": "Add Promotion Code(s)",
+    "promotionsApplied": "Promotion(s) applied:",
+    "removeDiscountCodeFromOrder": "Remove discount code from order"
   },
   "account": {
     "title": "Account",
@@ -107,17 +172,20 @@
     "signIn": "Sign in",
     "signInDescription": "Sign in to access an enhanced shopping experience.",
     "signUp": "Join us",
-    "register": "Become a Medusa Store Member",
-    "registerDescription": "Create your Medusa Store Member profile, and get access to an enhanced shopping experience.",
+    "register": "Become a Dirty Labs Member",
+    "registerDescription": "Create your Dirty Labs account and get access to an enhanced shopping experience.",
     "notAMember": "Not a member?",
     "alreadyMember": "Already a member?",
     "signOut": "Sign out",
     "profile": "Profile",
-    "profileDescription": "View and edit your Medusa Store profile.",
+    "profileDescription": "View and edit your Dirty Labs profile.",
+    "profilePageDescription": "View and update your profile information, including your name, email, and phone number. You can also update your billing address or change your password.",
     "orders": "Orders",
     "ordersDescription": "View your previous orders and their status. You can also create returns or exchanges for your orders if needed.",
+    "ordersPageDescription": "Overview of your previous orders.",
     "addresses": "Addresses",
     "addressesDescription": "View and update your shipping addresses, you can add as many as you like. Saving your addresses will make them available during checkout.",
+    "addressesPageDescription": "View your addresses",
     "shippingAddresses": "Shipping Addresses",
     "overview": "Overview",
     "signedInAs": "Signed in as:",
@@ -125,7 +193,12 @@
     "noOrders": "Nothing to see here",
     "noOrdersDescription": "You don't have any orders yet, let us change that {link}",
     "greetingMessage": "Hello {name}",
+    "completed": "Completed",
+    "saved": "Saved",
+    "datePlaced": "Date placed",
+    "totalAmount": "Total amount",
     "viewOrder": "Go to order #{orderId}",
+    "noRecentOrders": "No recent orders",
     "billingAddressTitle": "Billing address",
     "name": "Name",
     "emailAddress": "Email",
@@ -135,7 +208,23 @@
     "editAddress": "Edit address",
     "saveChanges": "Save changes",
     "deleteAddress": "Delete address",
-    "errorOccurred": "An error occurred, please try again"
+    "errorOccurred": "An error occurred, please try again",
+    "signInPageDescription": "Sign in to your Dirty Labs account.",
+    "byCreatingAccount": "By creating an account, you agree to Dirty Labs's",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfUse": "Terms of Use",
+    "and": "and",
+    "continueShopping": "Continue shopping",
+    "gotQuestions": "Got questions?",
+    "customerServiceCopy": "You can find frequently asked questions and answers on our customer service page.",
+    "customerService": "Customer Service",
+    "updatedSuccessfully": "{label} updated successfully",
+    "oldPassword": "Old password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "passwordUpdateNotImplemented": "Password update is not implemented",
+    "noBillingAddress": "No billing address",
+    "addressIdRequired": "Address ID is required"
   },
   "order": {
     "title": "Order #{orderId}",
@@ -163,7 +252,48 @@
     "declineTransfer": "Decline transfer",
     "orderTransferred": "Order transfered!",
     "transferSuccess": "Order {orderId} has been successfully transfered to the new owner.",
-    "transferError": "There was an error accepting the transfer. Please try again."
+    "transferError": "There was an error accepting the transfer. Please try again.",
+    "confirmationSentTo": "We have sent the order confirmation details to",
+    "paymentSection": "Payment",
+    "paymentDetails": "Payment details",
+    "deliverySection": "Delivery",
+    "shippingMethodWithAmount": "{name} ({amount})",
+    "backToOverview": "Back to overview",
+    "thankYou": "Thank you!",
+    "placedSuccessfully": "Your order was placed successfully.",
+    "itemsCount": "{count, plural, one {# item} other {# items}}",
+    "more": "more",
+    "seeDetails": "See details",
+    "cardEnding": "**** **** **** {last4}",
+    "paymentRecordedAt": "{amount} paid at {timestamp}",
+    "orderTransfers": "Order transfers",
+    "connectOrder": "Can't find the order you are looking for? Connect an order to your account.",
+    "orderIdPlaceholder": "Order ID",
+    "orderIdRequired": "Order ID is required",
+    "requestTransfer": "Request transfer",
+    "transferRequested": "Transfer for order {orderId} requested",
+    "transferRequestSent": "Transfer request email sent to {email}",
+    "fulfillmentStatusValues": {
+      "notFulfilled": "Not fulfilled",
+      "partiallyFulfilled": "Partially fulfilled",
+      "fulfilled": "Fulfilled",
+      "partiallyShipped": "Partially shipped",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "canceled": "Canceled"
+    },
+    "paymentStatusValues": {
+      "notPaid": "Not paid",
+      "awaiting": "Awaiting",
+      "authorized": "Authorized",
+      "partiallyAuthorized": "Partially authorized",
+      "captured": "Captured",
+      "partiallyCaptured": "Partially captured",
+      "refunded": "Refunded",
+      "partiallyRefunded": "Partially refunded",
+      "canceled": "Canceled",
+      "requiresAction": "Requires action"
+    }
   },
   "errors": {
     "pageNotFound": "Page not found",
@@ -177,13 +307,54 @@
   "footer": {
     "categories": "Categories",
     "collections": "Collections",
-    "allRightsReserved": "© {year} Medusa Store. All rights reserved."
+    "resources": "Resources",
+    "documentation": "Documentation",
+    "sourceCode": "Source code",
+    "allRightsReserved": "© {year} Dirty Labs. All rights reserved."
   },
   "metadata": {
-    "defaultTitle": "Medusa Next.js Starter Template",
-    "defaultDescription": "A performant frontend ecommerce starter template with Next.js 15 and Medusa.",
-    "collectionTitle": "{title} | Medusa Store",
+    "defaultTitle": "Dirty Labs — Bio-Enzyme Cleaning Products",
+    "defaultDescription": "Shop bio-enzyme cleaning products for laundry, dishes, and more. Tough on dirt, gentle on everything else.",
+    "collectionTitle": "{title} | Dirty Labs",
     "collectionDescription": "{title} collection",
-    "categoryTitle": "{title} | Medusa Store"
+    "categoryTitle": "{title} | Dirty Labs",
+    "categoryDescription": "{title} category"
+  },
+  "paymentProviders": {
+    "creditCard": "Credit card",
+    "ideal": "iDEAL",
+    "bancontact": "Bancontact",
+    "paypal": "PayPal",
+    "manualPayment": "Manual payment"
+  },
+  "locales": {
+    "changeLanguage": "Change language",
+    "en": "English",
+    "bg": "Bulgarian"
+  },
+  "pricing": {
+    "from": "From",
+    "original": "Original"
+  },
+  "home": {
+    "hero": {
+      "headline": "Clean Science. Cleaner Planet.",
+      "subheadline": "Bio-enzyme cleaning products formulated to be tough on dirt and gentle on everything else.",
+      "cta": "Shop Now"
+    },
+    "features": {
+      "bioEnzymes": {
+        "title": "Bio-Enzyme Technology",
+        "description": "Phytolase enzymes break down the toughest stains at a molecular level — no harsh chemicals needed."
+      },
+      "hypoallergenic": {
+        "title": "Hypoallergenic Formula",
+        "description": "Gentle on sensitive skin and safe for the whole family, including babies."
+      },
+      "ecoFriendly": {
+        "title": "Planet-Friendly",
+        "description": "Ultra-concentrated formulas mean less packaging, less waste, and a smaller footprint with every wash."
+      }
+    }
   }
 }

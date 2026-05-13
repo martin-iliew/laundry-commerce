@@ -103,7 +103,6 @@ async function getCountryCode(
  * Middleware to handle region selection, onboarding status, and i18n locale routing.
  */
 export async function middleware(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams
   const pathname = request.nextUrl.pathname
 
   // Handle i18n locale routing first
@@ -118,10 +117,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  let redirectUrl = request.nextUrl.href
-  let response = NextResponse.redirect(redirectUrl, 307)
-  let cacheIdCookie = request.cookies.get("_medusa_cache_id")
-  let cacheId = cacheIdCookie?.value || crypto.randomUUID()
+  const cacheIdCookie = request.cookies.get("_medusa_cache_id")
+  const cacheId = cacheIdCookie?.value || crypto.randomUUID()
 
   const regionMap = await getRegionMap(cacheId)
   const countryCode = regionMap && (await getCountryCode(request, regionMap))
@@ -129,62 +126,49 @@ export async function middleware(request: NextRequest) {
   const urlHasCountryCode =
     countryCode && request.nextUrl.pathname.split("/")[1].includes(countryCode)
 
-  // If one of the country codes is in the url and the cache id is set, handle i18n routing
-  if (urlHasCountryCode && cacheIdCookie) {
-    // Check if we need to add locale segment
-    // Pattern: /{countryCode}/... → check if second segment is locale
+  if (urlHasCountryCode) {
     const validLocales = ['en', 'bg']
     const secondSegment = segments[1]
     const hasLocaleSegment = validLocales.includes(secondSegment)
 
-    if (!hasLocaleSegment && segments.length > 0) {
-      // No locale segment present, add default locale
+    let res: NextResponse
+
+    if (!hasLocaleSegment) {
+      // Rewrite to inject the default locale segment: /bg → /bg/bg, /us/store → /us/en/store
       const defaultLocale = countryCode === 'bg' ? 'bg' : 'en'
       const pathAfterCountry = segments.slice(1).join('/')
       const queryString = request.nextUrl.search || ''
-      
-      // Build rewrite path - ensure proper formatting
-      let rewritePath
-      if (pathAfterCountry) {
-        rewritePath = `/${countryCode}/${defaultLocale}/${pathAfterCountry}${queryString}`
-      } else {
-        // Root path like /bg -> /bg/bg
-        rewritePath = `/${countryCode}/${defaultLocale}${queryString}`
-      }
-      
-      return NextResponse.rewrite(new URL(rewritePath, request.url))
+      const rewritePath = pathAfterCountry
+        ? `/${countryCode}/${defaultLocale}/${pathAfterCountry}${queryString}`
+        : `/${countryCode}/${defaultLocale}${queryString}`
+      res = NextResponse.rewrite(new URL(rewritePath, request.url))
+    } else {
+      res = NextResponse.next()
     }
 
-    return NextResponse.next()
-  }
+    // Set cache id cookie on the same response — no separate redirect needed
+    if (!cacheIdCookie) {
+      res.cookies.set("_medusa_cache_id", cacheId, { maxAge: 60 * 60 * 24 })
+    }
 
-  // If one of the country codes is in the url and the cache id is not set, set the cache id and redirect
-  if (urlHasCountryCode && !cacheIdCookie) {
-    response.cookies.set("_medusa_cache_id", cacheId, {
-      maxAge: 60 * 60 * 24,
-    })
-
-    return response
+    return res
   }
 
   const redirectPath =
     request.nextUrl.pathname === "/" ? "" : request.nextUrl.pathname
-
   const queryString = request.nextUrl.search ? request.nextUrl.search : ""
 
-  // If no country code is set, we redirect to the relevant region.
   if (!urlHasCountryCode && countryCode) {
-    redirectUrl = `${request.nextUrl.origin}/${countryCode}${redirectPath}${queryString}`
-    response = NextResponse.redirect(`${redirectUrl}`, 307)
-  } else if (!urlHasCountryCode && !countryCode) {
-    // Handle case where no valid country code exists (empty regions)
-    return new NextResponse(
-      "No valid regions configured. Please set up regions with countries in your Medusa Admin.",
-      { status: 500 }
-    )
+    const redirectUrl = `${request.nextUrl.origin}/${countryCode}${redirectPath}${queryString}`
+    const res = NextResponse.redirect(redirectUrl, 307)
+    res.cookies.set("_medusa_cache_id", cacheId, { maxAge: 60 * 60 * 24 })
+    return res
   }
 
-  return response
+  return new NextResponse(
+    "No valid regions configured. Please set up regions with countries in your Medusa Admin.",
+    { status: 500 }
+  )
 }
 
 export const config = {

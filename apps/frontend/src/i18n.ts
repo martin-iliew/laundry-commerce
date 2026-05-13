@@ -10,12 +10,15 @@ export function getDefaultLocale(countryCode: string): Locale {
   return countryCode === 'bg' ? 'bg' : 'en';
 }
 
-export default getRequestConfig(async ({ locale }) => {
-  if (!locales.includes(locale as Locale)) {
-    notFound();
+export default getRequestConfig(async ({ requestLocale }) => {
+  let locale = await requestLocale;
+  
+  if (!locale || !locales.includes(locale as Locale)) {
+    locale = 'en';
   }
 
   return {
+    locale,
     messages: (await import(`../messages/${locale}.json`)).default,
   };
 });
