@@ -8,6 +8,7 @@ import { Fragment } from "react"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CountrySelect from "../country-select"
 import { HttpTypes } from "@medusajs/types"
+import { useTranslations } from "next-intl"
 
 const SideMenuItems = {
   Home: "/",
@@ -17,6 +18,8 @@ const SideMenuItems = {
 }
 
 const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
+  const tNav = useTranslations("nav")
+  const tFooter = useTranslations("footer")
   const toggleState = useToggleState()
 
   return (
@@ -30,7 +33,7 @@ const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
                   data-testid="nav-menu-button"
                   className="relative h-full flex items-center transition-all ease-out duration-200 focus:outline-none hover:text-ui-fg-base"
                 >
-                  Menu
+                  {tNav("menu")}
                 </Popover.Button>
               </div>
 
@@ -72,7 +75,13 @@ const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
                               onClick={close}
                               data-testid={`${name.toLowerCase()}-link`}
                             >
-                              {name}
+                              {name === "Home"
+                                ? tNav("home")
+                                : name === "Store"
+                                ? tNav("store")
+                                : name === "Account"
+                                ? tNav("account")
+                                : tNav("cart")}
                             </LocalizedClientLink>
                           </li>
                         )
@@ -98,8 +107,9 @@ const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
                         />
                       </div>
                       <Text className="flex justify-between txt-compact-small">
-                        © {new Date().getFullYear()} Medusa Store. All rights
-                        reserved.
+                        {tFooter("allRightsReserved", {
+                          year: new Date().getFullYear(),
+                        })}
                       </Text>
                     </div>
                   </div>

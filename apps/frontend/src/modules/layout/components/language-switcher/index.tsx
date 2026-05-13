@@ -1,33 +1,40 @@
 "use client"
 
 import { useParams, usePathname, useRouter } from "next/navigation"
-import { Locale } from "../../../../i18n"
-import { switchLocale } from "@lib/util/locale"
+import { Locale, locales } from "../../../../i18n"
 import { useState } from "react"
 import clx from "clsx"
+import { useTranslations } from "next-intl"
 
 const LanguageSwitcher = () => {
   const params = useParams()
   const pathname = usePathname()
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
+  const t = useTranslations("locales")
 
-  const currentLocale = (params.locale as Locale) || "en"
+  const currentLocale = (params.locale as Locale) || (params.countryCode as Locale) || "en"
 
-  const locales: { code: Locale; label: string; flag: string }[] = [
-    { code: "en", label: "English", flag: "🇬🇧" },
-    { code: "bg", label: "Български", flag: "🇧🇬" },
+  const localeOptions: { code: Locale; label: string; codeDisplay: string }[] = [
+    { code: "en", label: t("en"), codeDisplay: "EN" },
+    { code: "bg", label: t("bg"), codeDisplay: "BG" },
   ]
 
   const handleLocaleChange = (newLocale: Locale) => {
     if (newLocale !== currentLocale) {
-      const newPath = switchLocale(pathname, newLocale)
+      // Path is /{countryCode}/{locale?}/...rest
+      // We want /{newLocale}/...rest (countryCode = locale, no separate locale segment)
+      const segments = pathname.split("/").filter(Boolean)
+      const hasLocaleSegment =
+        segments.length > 1 && locales.includes(segments[1] as Locale)
+      const rest = hasLocaleSegment ? segments.slice(2) : segments.slice(1)
+      const newPath = `/${newLocale}${rest.length ? "/" + rest.join("/") : ""}`
       router.push(newPath)
     }
     setIsOpen(false)
   }
 
-  const currentLocaleData = locales.find((l) => l.code === currentLocale)
+  const currentLocaleData = localeOptions.find((l) => l.code === currentLocale)
 
   return (
     <div className="relative">
@@ -35,11 +42,10 @@ const LanguageSwitcher = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 hover:text-ui-fg-base text-ui-fg-subtle transition-colors px-2 py-1"
         data-testid="language-switcher-button"
-        aria-label="Change language"
+        aria-label={t("changeLanguage")}
       >
-        <span className="text-lg">{currentLocaleData?.flag}</span>
-        <span className="hidden small:inline text-sm uppercase">
-          {currentLocale}
+        <span className="text-sm font-medium">
+          {currentLocaleData?.codeDisplay}
         </span>
         <svg
           className={clx("w-4 h-4 transition-transform", {
@@ -66,7 +72,7 @@ const LanguageSwitcher = () => {
           />
           <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-ui-border-base z-20">
             <div className="py-1">
-              {locales.map((locale) => (
+              {localeOptions.map((locale) => (
                 <button
                   key={locale.code}
                   onClick={() => handleLocaleChange(locale.code)}
@@ -81,7 +87,7 @@ const LanguageSwitcher = () => {
                   )}
                   data-testid={`locale-option-${locale.code}`}
                 >
-                  <span className="text-lg">{locale.flag}</span>
+                  <span className="font-medium w-6">{locale.codeDisplay}</span>
                   <span>{locale.label}</span>
                   {locale.code === currentLocale && (
                     <svg

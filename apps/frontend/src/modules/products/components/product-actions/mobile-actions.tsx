@@ -10,6 +10,12 @@ import { getProductPrice } from "@lib/util/get-product-price"
 import OptionSelect from "./option-select"
 import { HttpTypes } from "@medusajs/types"
 import { isSimpleProduct } from "@lib/util/product"
+import { useLocale, useTranslations } from "next-intl"
+import {
+  getLocalizedField,
+  getLocalizedProductOptionTitle,
+  getLocalizedProductOptionValue,
+} from "@lib/util/localized-content"
 
 type MobileActionsProps = {
   product: HttpTypes.StoreProduct
@@ -34,6 +40,8 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   show,
   optionsDisabled,
 }) => {
+  const t = useTranslations("product")
+  const locale = useLocale()
   const { state, open, close } = useToggleState()
 
   const price = getProductPrice({
@@ -74,7 +82,9 @@ const MobileActions: React.FC<MobileActionsProps> = ({
             data-testid="mobile-actions"
           >
             <div className="flex items-center gap-x-2">
-              <span data-testid="mobile-title">{product.title}</span>
+              <span data-testid="mobile-title">
+                {getLocalizedField(product, "title", locale)}
+              </span>
               <span>—</span>
               {selectedPrice ? (
                 <div className="flex items-end gap-x-2 text-ui-fg-base">
@@ -110,8 +120,22 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                 <div className="flex items-center justify-between w-full">
                   <span>
                     {variant
-                      ? Object.values(options).join(" / ")
-                      : "Select Options"}
+                      ? (product.options || [])
+                          .map((option) => {
+                            const selectedValue = options[option.id]
+
+                            return selectedValue
+                              ? getLocalizedProductOptionValue(
+                                  product,
+                                  option.title ?? "",
+                                  selectedValue,
+                                  locale
+                                )
+                              : null
+                          })
+                          .filter(Boolean)
+                          .join(" / ")
+                      : t("selectOptions")}
                   </span>
                   <ChevronDown />
                 </div>
@@ -124,10 +148,10 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                 data-testid="mobile-cart-button"
               >
                 {!variant
-                  ? "Select variant"
+                  ? t("selectVariant")
                   : !inStock
-                  ? "Out of stock"
-                  : "Add to cart"}
+                  ? t("outOfStock")
+                  : t("addToCart")}
               </Button>
             </div>
           </div>
@@ -181,7 +205,29 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                                 option={option}
                                 current={options[option.id]}
                                 updateOption={updateOptions}
-                                title={option.title ?? ""}
+                                title={getLocalizedProductOptionTitle(
+                                  product,
+                                  option.title ?? "",
+                                  locale
+                                )}
+                                selectLabel={t("select", {
+                                  option: getLocalizedProductOptionTitle(
+                                    product,
+                                    option.title ?? "",
+                                    locale
+                                  ),
+                                })}
+                                valueLabels={Object.fromEntries(
+                                  (option.values ?? []).map((value) => [
+                                    value.value,
+                                    getLocalizedProductOptionValue(
+                                      product,
+                                      option.title ?? "",
+                                      value.value,
+                                      locale
+                                    ),
+                                  ])
+                                )}
                                 disabled={optionsDisabled}
                               />
                             </div>

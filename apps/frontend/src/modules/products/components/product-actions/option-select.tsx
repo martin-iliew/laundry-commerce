@@ -7,6 +7,8 @@ type OptionSelectProps = {
   current: string | undefined
   updateOption: (title: string, value: string) => void
   title: string
+  selectLabel: string
+  valueLabels?: Record<string, string>
   disabled: boolean
   "data-testid"?: string
 }
@@ -16,6 +18,8 @@ const OptionSelect: React.FC<OptionSelectProps> = ({
   current,
   updateOption,
   title,
+  selectLabel,
+  valueLabels,
   "data-testid": dataTestId,
   disabled,
 }) => {
@@ -23,7 +27,7 @@ const OptionSelect: React.FC<OptionSelectProps> = ({
 
   return (
     <div className="flex flex-col gap-y-3">
-      <span className="text-sm">Select {title}</span>
+      <span className="text-sm">{selectLabel}</span>
       <div
         className="flex flex-wrap justify-between gap-2"
         data-testid={dataTestId}
@@ -44,7 +48,7 @@ const OptionSelect: React.FC<OptionSelectProps> = ({
               disabled={disabled}
               data-testid="option-button"
             >
-              {v}
+              {valueLabels?.[v] ?? v}
             </button>
           )
         })}

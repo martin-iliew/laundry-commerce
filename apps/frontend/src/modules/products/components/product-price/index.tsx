@@ -1,4 +1,7 @@
+"use client"
+
 import { clx } from "@medusajs/ui"
+import { useTranslations } from "next-intl"
 
 import { getProductPrice } from "@lib/util/get-product-price"
 import { HttpTypes } from "@medusajs/types"
@@ -10,6 +13,7 @@ export default function ProductPrice({
   product: HttpTypes.StoreProduct
   variant?: HttpTypes.StoreProductVariant
 }) {
+  const t = useTranslations("pricing")
   const { cheapestPrice, variantPrice } = getProductPrice({
     product,
     variantId: variant?.id,
@@ -28,7 +32,7 @@ export default function ProductPrice({
           "text-ui-fg-interactive": selectedPrice.price_type === "sale",
         })}
       >
-        {!variant && "From "}
+        {!variant && `${t("from")} `}
         <span
           data-testid="product-price"
           data-value={selectedPrice.calculated_price_number}
@@ -39,7 +43,7 @@ export default function ProductPrice({
       {selectedPrice.price_type === "sale" && (
         <>
           <p>
-            <span className="text-ui-fg-subtle">Original: </span>
+            <span className="text-ui-fg-subtle">{t("original")}: </span>
             <span
               className="line-through"
               data-testid="original-product-price"

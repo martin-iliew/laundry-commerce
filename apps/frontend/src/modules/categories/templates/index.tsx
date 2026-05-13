@@ -8,8 +8,10 @@ import { SortOptions } from "@modules/store/components/refinement-list/sort-prod
 import PaginatedProducts from "@modules/store/templates/paginated-products"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { HttpTypes } from "@medusajs/types"
+import { getLocale } from "next-intl/server"
+import { getLocalizedField } from "@lib/util/localized-content"
 
-export default function CategoryTemplate({
+export default async function CategoryTemplate({
   category,
   sortBy,
   page,
@@ -20,6 +22,7 @@ export default function CategoryTemplate({
   page?: string
   countryCode: string
 }) {
+  const locale = await getLocale()
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
 
@@ -52,16 +55,18 @@ export default function CategoryTemplate({
                   href={`/categories/${parent.handle}`}
                   data-testid="sort-by-link"
                 >
-                  {parent.name}
+                  {getLocalizedField(parent, "name", locale)}
                 </LocalizedClientLink>
                 /
               </span>
             ))}
-          <h1 data-testid="category-page-title">{category.name}</h1>
+          <h1 data-testid="category-page-title">
+            {getLocalizedField(category, "name", locale)}
+          </h1>
         </div>
         {category.description && (
           <div className="mb-8 text-base-regular">
-            <p>{category.description}</p>
+            <p>{getLocalizedField(category, "description", locale)}</p>
           </div>
         )}
         {category.category_children && (
@@ -70,7 +75,7 @@ export default function CategoryTemplate({
               {category.category_children?.map((c) => (
                 <li key={c.id}>
                   <InteractiveLink href={`/categories/${c.handle}`}>
-                    {c.name}
+                    {getLocalizedField(c, "name", locale)}
                   </InteractiveLink>
                 </li>
               ))}

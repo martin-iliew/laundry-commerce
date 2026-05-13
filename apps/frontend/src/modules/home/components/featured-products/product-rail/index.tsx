@@ -4,6 +4,8 @@ import { Text } from "@medusajs/ui"
 
 import InteractiveLink from "@modules/common/components/interactive-link"
 import ProductPreview from "@modules/products/components/product-preview"
+import { getLocale, getTranslations } from "next-intl/server"
+import { getLocalizedField } from "@lib/util/localized-content"
 
 export default async function ProductRail({
   collection,
@@ -12,6 +14,8 @@ export default async function ProductRail({
   collection: HttpTypes.StoreCollection
   region: HttpTypes.StoreRegion
 }) {
+  const locale = await getLocale()
+  const t = await getTranslations("store")
   const {
     response: { products: pricedProducts },
   } = await listProducts({
@@ -29,9 +33,11 @@ export default async function ProductRail({
   return (
     <div className="content-container py-12 small:py-24">
       <div className="flex justify-between mb-8">
-        <Text className="txt-xlarge">{collection.title}</Text>
+        <Text className="txt-xlarge">
+          {getLocalizedField(collection, "title", locale)}
+        </Text>
         <InteractiveLink href={`/collections/${collection.handle}`}>
-          View all
+          {t("viewAll")}
         </InteractiveLink>
       </div>
       <ul className="grid grid-cols-2 small:grid-cols-3 gap-x-6 gap-y-24 small:gap-y-36">

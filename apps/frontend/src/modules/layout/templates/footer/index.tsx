@@ -1,11 +1,15 @@
+import { getLocale, getTranslations } from "next-intl/server"
+import { getLocalizedField } from "@lib/util/localized-content"
 import { listCategories } from "@lib/data/categories"
 import { listCollections } from "@lib/data/collections"
 import { Text, clx } from "@medusajs/ui"
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import MedusaCTA from "@modules/layout/components/medusa-cta"
 
 export default async function Footer() {
+  const locale = await getLocale()
+  const tFooter = await getTranslations("footer")
+  const tNav = await getTranslations("nav")
   const { collections } = await listCollections({
     fields: "*products",
   })
@@ -20,14 +24,14 @@ export default async function Footer() {
               href="/"
               className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base uppercase"
             >
-              Medusa Store
+              {tNav("storeName")}
             </LocalizedClientLink>
           </div>
           <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
             {productCategories && productCategories?.length > 0 && (
               <div className="flex flex-col gap-y-2">
                 <span className="txt-small-plus txt-ui-fg-base">
-                  Categories
+                  {tFooter("categories")}
                 </span>
                 <ul
                   className="grid grid-cols-1 gap-2"
@@ -40,7 +44,7 @@ export default async function Footer() {
 
                     const children =
                       c.category_children?.map((child) => ({
-                        name: child.name,
+                        name: getLocalizedField(child, "name", locale),
                         handle: child.handle,
                         id: child.id,
                       })) || null
@@ -58,7 +62,7 @@ export default async function Footer() {
                           href={`/categories/${c.handle}`}
                           data-testid="category-link"
                         >
-                          {c.name}
+                          {getLocalizedField(c, "name", locale)}
                         </LocalizedClientLink>
                         {children && (
                           <ul className="grid grid-cols-1 ml-3 gap-2">
@@ -85,7 +89,7 @@ export default async function Footer() {
             {collections && collections.length > 0 && (
               <div className="flex flex-col gap-y-2">
                 <span className="txt-small-plus txt-ui-fg-base">
-                  Collections
+                  {tFooter("collections")}
                 </span>
                 <ul
                   className={clx(
@@ -101,55 +105,21 @@ export default async function Footer() {
                         className="hover:text-ui-fg-base"
                         href={`/collections/${c.handle}`}
                       >
-                        {c.title}
+                        {getLocalizedField(c, "title", locale)}
                       </LocalizedClientLink>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
-            <div className="flex flex-col gap-y-2">
-              <span className="txt-small-plus txt-ui-fg-base">Medusa</span>
-              <ul className="grid grid-cols-1 gap-y-2 text-ui-fg-subtle txt-small">
-                <li>
-                  <a
-                    href="https://github.com/medusajs"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    GitHub
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://docs.medusajs.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/medusajs/nextjs-starter-medusa"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    Source code
-                  </a>
-                </li>
-              </ul>
-            </div>
           </div>
         </div>
         <div className="flex w-full mb-16 justify-between text-ui-fg-muted">
           <Text className="txt-compact-small">
-            © {new Date().getFullYear()} Medusa Store. All rights reserved.
+            {tFooter("allRightsReserved", {
+              year: new Date().getFullYear(),
+            })}
           </Text>
-          <MedusaCTA />
         </div>
       </div>
     </footer>

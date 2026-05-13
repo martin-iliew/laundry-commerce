@@ -1,33 +1,37 @@
-import { Github } from "@medusajs/icons"
-import { Button, Heading } from "@medusajs/ui"
+import { Button, Heading, Text } from "@medusajs/ui"
+import { getTranslations } from "next-intl/server"
+import { buildLocalizedPath } from "@lib/util/locale"
+import { Locale } from "../../../../i18n"
+import Link from "next/link"
 
-const Hero = () => {
+type HeroProps = {
+  countryCode: string
+  locale: Locale
+}
+
+const Hero = async ({ countryCode, locale }: HeroProps) => {
+  const t = await getTranslations("home")
+  const shopHref = buildLocalizedPath(countryCode, locale, "/store")
+
   return (
-    <div className="h-[75vh] w-full border-b border-ui-border-base relative bg-ui-bg-subtle">
-      <div className="absolute inset-0 z-10 flex flex-col justify-center items-center text-center small:p-32 gap-6">
-        <span>
+    <div className="w-full border-b border-ui-border-base bg-neutral-950">
+      <div className="content-container py-24 small:py-36 flex flex-col items-start gap-8 small:gap-10">
+        <div className="flex flex-col gap-3 max-w-2xl">
           <Heading
             level="h1"
-            className="text-3xl leading-10 text-ui-fg-base font-normal"
+            className="text-4xl small:text-6xl leading-tight text-white font-medium tracking-tight"
           >
-            Ecommerce Starter Template
+            {t("hero.headline")}
           </Heading>
-          <Heading
-            level="h2"
-            className="text-3xl leading-10 text-ui-fg-subtle font-normal"
-          >
-            Powered by Medusa and Next.js
-          </Heading>
-        </span>
-        <a
-          href="https://github.com/medusajs/nextjs-starter-medusa"
-          target="_blank"
-        >
-          <Button variant="secondary">
-            View on GitHub
-            <Github />
+          <Text className="text-lg text-neutral-400 leading-relaxed">
+            {t("hero.subheadline")}
+          </Text>
+        </div>
+        <Link href={shopHref}>
+          <Button variant="primary" size="large">
+            {t("hero.cta")}
           </Button>
-        </a>
+        </Link>
       </div>
     </div>
   )
