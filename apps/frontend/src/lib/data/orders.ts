@@ -4,6 +4,7 @@ import { sdk } from "@lib/config"
 import medusaError from "@lib/util/medusa-error"
 import { getAuthHeaders, getCacheOptions } from "./cookies"
 import { HttpTypes } from "@medusajs/types"
+import { getTranslations } from "next-intl/server"
 
 export const retrieveOrder = async (id: string) => {
   const headers = {
@@ -15,7 +16,7 @@ export const retrieveOrder = async (id: string) => {
       method: "GET",
       query: {
         fields:
-          "*payment_collections.payments,*items,*items.metadata,*items.variant,*items.product",
+          "*payment_collections.payments,*items,*items.metadata,*items.variant,*items.product,+items.product.metadata,+items.variant.product.metadata",
       },
       headers,
       cache: "no-store",
@@ -40,7 +41,8 @@ export const listOrders = async (
         limit,
         offset,
         order: "-created_at",
-        fields: "*items,+items.metadata,*items.variant,*items.product",
+        fields:
+          "*items,+items.metadata,*items.variant,*items.product,+items.product.metadata,+items.variant.product.metadata",
         ...filters,
       },
       headers,
@@ -62,10 +64,11 @@ export const createTransferRequest = async (
   error: string | null
   order: HttpTypes.StoreOrder | null
 }> => {
+  const t = await getTranslations("order")
   const id = formData.get("order_id") as string
 
   if (!id) {
-    return { success: false, error: "Order ID is required", order: null }
+    return { success: false, error: t("orderIdRequired"), order: null }
   }
 
   const headers = await getAuthHeaders()

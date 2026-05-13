@@ -3,6 +3,7 @@
 import { sdk } from "@lib/config"
 import medusaError from "@lib/util/medusa-error"
 import { HttpTypes } from "@medusajs/types"
+import { getTranslations } from "next-intl/server"
 import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import {
@@ -214,11 +215,12 @@ export const updateCustomerAddress = async (
   currentState: Record<string, unknown>,
   formData: FormData
 ): Promise<any> => {
+  const t = await getTranslations("account")
   const addressId =
     (currentState.addressId as string) || (formData.get("addressId") as string)
 
   if (!addressId) {
-    return { success: false, error: "Address ID is required" }
+    return { success: false, error: t("addressIdRequired") }
   }
 
   const address = {

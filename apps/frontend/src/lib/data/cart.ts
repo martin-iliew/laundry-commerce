@@ -22,7 +22,8 @@ import { getRegion } from "./regions"
  */
 export async function retrieveCart(cartId?: string, fields?: string) {
   const id = cartId || (await getCartId())
-  fields ??= "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name"
+  fields ??=
+    "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.product.metadata, +items.variant.product.metadata, +items.total, *promotions, +shipping_methods.name, +shipping_methods.metadata, +shipping_methods.data"
 
   if (!id) {
     return null
@@ -454,7 +455,7 @@ export async function listCartOptions() {
   return await sdk.client.fetch<{
     shipping_options: HttpTypes.StoreCartShippingOption[]
   }>("/store/shipping-options", {
-    query: { cart_id: cartId },
+    query: { cart_id: cartId, fields: "*service_zone.fulfillment_set.location.address,+metadata,+data" },
     headers,
     cache: "no-store",
   })
